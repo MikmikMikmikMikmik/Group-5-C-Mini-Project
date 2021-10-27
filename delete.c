@@ -63,7 +63,7 @@ void display()
     fp = fopen("myINVENTORY.txt", "r");
     while(fread(&product, sizeof(item),1,fp))
     {
-        printf("\n%-5d%-20s%-25d%-30s%-35f",product.productID, product.productDescription, product.quantity, product.expiration
+        printf("\n%-10d%-25s%-30d%-35s%-40f",product.productID, product.productDescription, product.quantity, product.expiration
         , product.price);
     }
 
@@ -80,7 +80,7 @@ void deleteItem()
         printf("\nDELETE ITEM MENU");
         printf("\n [B] BACK");
         printf("\n\n PLEASE INPUT ITEM ID: ");
-        scanf(" %s", &deleteItemID);
+        scanf("%s", &deleteItemID);
 
         if (strcmp (deleteItemID, "B") == 0 || strcmp (deleteItemID, "b") == 0)
         {
@@ -108,6 +108,8 @@ void deleteItem()
             item s1;
             FILE *fp, *fpl;
             int j, rno, found = 0;
+            char details[100];
+            
             fp = fopen("myINVENTORY.txt","r");
             fpl = fopen("temp.txt","w");
             while (fread(&s1,sizeof(item),1,fp))
@@ -116,6 +118,20 @@ void deleteItem()
                 if(s1.productID == itemID)
                 {
                     found=1;
+                  printf("\n Do you want to delete \n%-10d%-10s%-10d%-10s%-10f ? [Y/N] : ",s1.productID, s1.productDescription, s1.quantity, s1.expiration
+                     , s1.price);
+                   /* strcat(details, "daf");
+                    strcat(details, "   ");
+                    strcat(details, s1.productDescription);
+                    strcat(details, "   ");
+                    strcat(details, s1.quantity);
+                    strcat(details, "   ");
+                    strcat(details, s1.expiration);
+                    strcat(details, "   ");
+                    char price[20];
+                    sprintf(price, "%g", s1.price);
+                    strcat(details, price);
+                    strcat(details, "   ");*/
                 }
                 else
                 {
@@ -126,15 +142,28 @@ void deleteItem()
             fclose(fpl);
             if (found)
             {
-                fpl = fopen("temp.txt","r");
-                fp = fopen("myINVENTORY.txt","w");
-                while (fread(&s1,sizeof(item),1,fpl))
+                printf(" ");
+                char choke[10];
+                scanf(" %s",&choke);
+                if(strcmp (choke, "Y") == 0 || strcmp (choke, "y") == 0)
                 {
-                    fwrite(&s1,sizeof(item),1,fp);
+                     fpl = fopen("temp.txt","r");
+                     fp = fopen("myINVENTORY.txt","w");
+                     while (fread(&s1,sizeof(item),1,fpl))
+                     {
+                        fwrite(&s1,sizeof(item),1,fp);
+                     }
+                     printf("\nDELETE SUCCESSFUL!!!!!!!\n\n");
+                     fclose(fp);
+                     fclose(fpl);
+                     deleteSuccess = 1;
                 }
-                printf("DELETE SUCCESSFUL!!!!!!!");
-                fclose(fp);
-                fclose(fpl);
+                else
+                {
+                    deleteSuccess = 1;
+                    deleteItem();
+                }
+               
             }
             else
             {
@@ -151,7 +180,7 @@ void deleteChoice()
     while(strcmp (choice, "D") != 0 || strcmp (choice, "S")  != 0 || strcmp (choice, "M") != 0 ||
     strcmp (choice, "d") != 0 || strcmp (choice, "s")  != 0 || strcmp (choice, "M") != 0){
     
-    printf("\n\n\nDELETE MENU");
+    printf("\nDELETE MENU");
     printf("\n [D] DELETE INVENTORY ITEM");
     printf("\n [S] SEARCH INVENTORY ITEM (add product dummy)");
     printf("\n [M] MAIN MENU (view products dummy)");
