@@ -63,6 +63,7 @@ void display()
     fp = fopen("myINVENTORY.txt", "r");
     while(fread(&product, sizeof(item),1,fp))
     {
+        
         printf("\n%-10d%-25s%-30d%-35s%-40f",product.productID, product.productDescription, product.quantity, product.expiration
         , product.price);
     }
@@ -118,7 +119,8 @@ void deleteItem()
                 if(s1.productID == itemID)
                 {
                     found=1;
-                  printf("\n Do you want to delete \n%-10d%-10s%-10d%-10s%-10f ? [Y/N] : ",s1.productID, s1.productDescription, s1.quantity, s1.expiration
+                  printf("\n DO YOU WANT TO DELETE\n \nProduct ID     Description          Quantity     Exp Date         Price");
+                  printf("\n%-15d%-20s%-15d%-20s%-15f ? [Y/N] : ",s1.productID, s1.productDescription, s1.quantity, s1.expiration
                      , s1.price);
                    /* strcat(details, "daf");
                     strcat(details, "   ");
