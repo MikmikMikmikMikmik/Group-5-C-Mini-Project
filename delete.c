@@ -132,7 +132,7 @@ void deleteItem()
                 {
                     fwrite(&s1,sizeof(item),1,fp);
                 }
-                printf("SUCCESS?");
+                printf("DELETE SUCCESSFUL!!!!!!!");
                 fclose(fp);
                 fclose(fpl);
             }
