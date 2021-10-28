@@ -11,6 +11,7 @@ typedef struct product
 	float productPrice;
 }
 
+
 product;
 
 void clrscr()
@@ -19,19 +20,63 @@ void clrscr()
 }
 
 
-void viewAllItems()
+void viewAll()
 {
+	clrscr();
+	char choice1;
 	product p1;
-	FILE *p;
+	printf("Inventory Item List\n");
+	FILE *fp;
 	int j;
-	fp = fopen("inventory.txt", "r");
+	fp = fopen("inventory.csv", "r");
 	while(fread(&p1,sizeof(product),1,fp))
 	{
-		printf("\n%-5d%-20s	%d	%s	%f", p1.productID, p1.productQuantity, p1.productExpiration, p1.productPrice);
+		printf("\n%-5d%-20s   %d   %s    %f", p1.productID, p1.productName, p1.productQuantity, p1.productExpiration, p1.productPrice);
 	}
 	
-	fclose(fp);
+	fclose(fp);	
+	
+	printf("\n\n[A] Sort by Product ID\n");
+	printf("[B] Return to Main Menu");
+	printf("\n\nPlease input choice: ");
+	scanf(" %c", &choice1);
+	
+	if(choice1 == 'A')
+	{
+		sortInventoryItems();
+	}
+	
+	else if(choice1 == 'B')
+	{
+		mainMenu();
+	}
+	
 }
+
+void sortInventoryItems()
+{
+	
+}
+
+void mainMenu()
+{	
+	clrscr();
+	char choice;
+	printf("MAIN MENU\n");
+	printf("[A] Add Inventory Item\n");
+	printf("[B] Update Inventory Item\n");
+	printf("[C] View Inventory Item\n");
+	printf("[D] Delete Inventory Item\n");
+	printf("[X] Exit Program\n\n");
+	printf("Please input choice: ");
+	scanf(" %c", &choice);
+	
+	if(choice == 'C')
+	{
+		viewInventory();
+	}
+}
+	
 
 void viewInventory()
 {
@@ -41,17 +86,17 @@ void viewInventory()
 	printf("[A] View All\n");
 	printf("[B] Search for an Inventory Item\n");	
 	printf("[C] Back to Menu\n");	
-	printf("Please input choice: ");	
+	printf("\nPlease input choice: ");	
 	scanf("%c", &choice);
 	
 	if (choice == 'A')
 	{
-		viewAllItems();
+		viewAll();
 	}
-	else if(choice == 'B')
+	/*else if(choice == 'B')
 	{
 		searchMenu();
-	}
+	}*/
 	else if(choice == 'C')
 	{
 		mainMenu();
@@ -69,4 +114,5 @@ int main()
 {
 	viewInventory();	
 }
+
 
