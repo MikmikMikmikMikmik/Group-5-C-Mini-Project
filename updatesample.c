@@ -17,10 +17,17 @@ typedef struct date
 	int day;
 }date;
 
+typedef struct item1{
+	unsigned int itemID;
+	char itemDesc[10];
+	unsigned short quantity;
+	char expiDate[10];
+	float price;
+}item1;
 
 typedef struct item2{
 	unsigned int itemID;
-	char itemDesc[20];
+	char itemDesc[10];
 	unsigned short quantity;
 	struct expiDate{
 		unsigned char year;
@@ -40,7 +47,6 @@ typedef struct item
 }item;
 
 void mainMenu();
-void updateByID();
 void updateByDesc();
 void updateAgain();
 void updateInvalidInput();
@@ -50,7 +56,8 @@ void updateCheckingDate(int day,int month,int year);
 void updateNoofRec();
 
 int updateCheckItemID(int itemID, int count);
-int updateSearchID(item ptr[],int ino,int count);
+int updateByID(int ID);
+int updateSearchByID(item ptr[],int ino,int count);
 
 void updateInventory(){
 	clrscr();
@@ -65,7 +72,7 @@ void updateInventory(){
 			mainMenu(); break;
 		}
 		case 1: {
-			updateByID(); break;
+			updateSearchID(); break;
 		}
 		case 2: {
 			updateByDesc(); break;
@@ -112,8 +119,8 @@ void updateItem(){
 		printf("\nInventory file does not exist!");
 	}
 	
-	fprintf(fpointer, "11101,Nat. Spring (500mL),200,-,10.50\n11201,Nat. Spring (1L),100,-,16.00\n11202,Nat. Spring (1L),300,-,16.50\n12101,Datu Puti Vinegar (1L),100,2022-03-22,38.25\n51101,Nivea Silver Protect (50mL),50,2023-08-31,45.00\n");
-	//fprintf(fpointer, "\"11101\",\"Nat. Spring (500mL)\",\"200\",\"-\",\"10.50\"\n\"11201\",\"Nat. Spring (1L)\",\"100\",\"-\",\"16.00\"\n\"11202\",\"Nat. Spring (1L)\",\"300\",\"-\",\"16.50\"\n\"12101\",\"Datu Puti Vinegar (1L)\",\"100\",\"2022-03-22\",\"38.25\"\n\"51101\",\"Nivea Silver Protect (50mL)\",\"50\",\"2023-08-31\",\"45.00\"\n");
+	//fprintf(fpointer, "11101,Nat. Spring (500mL),200,-,10.50\n11201,Nat. Spring (1L),100,-,16.00\n11202,Nat. Spring (1L),300,-,16.50\n12101,Datu Puti Vinegar (1L),100,2022-03-22,38.25\n51101,Nivea Silver Protect (50mL),50,2023-08-31,45.00\n");
+	fprintf(fpointer, "\"11101\",\"Nat. Spring (500mL)\",\"200\",\"-\",\"10.50\"\n\"11201\",\"Nat. Spring (1L)\",\"100\",\"-\",\"16.00\"\n\"11202\",\"Nat. Spring (1L)\",\"300\",\"-\",\"16.50\"\n\"12101\",\"Datu Puti Vinegar (1L)\",\"100\",\"2022-03-22\",\"38.25\"\n\"51101\",\"Nivea Silver Protect (50mL)\",\"50\",\"2023-08-31\",\"45.00\"\n");
 	
 	fclose(fpointer);
 	
@@ -195,31 +202,113 @@ void updateCheckingDate(int day,int month,int year)
 
 }
 
-void display(){
-	item2 item;
-	FILE *fp;
-	const char s1[3] = ", ";
-	const char s2[2] = "-";
-    char *token;
-	fp = fopen("Inventory.csv","r");
-	while(fread(&item,sizeof(item),1,fp)){
-        char line[225];
-		token = strtok(line, s1);
-		printf("\n%d%20s%7d",item.itemID,item.itemDesc,item.quantity);	
-		token = strtok(line, s2);
-		if (item.expiDate==NULL || item.expiDate<0){
-			printf("-");
-		}
-		else{
-			printf("%7d / %2d / %2d",item.expiDate[0].year,item.expiDate[0].month,item.expiDate[0].day);
-		}
-		printf("%7.2f",item.price);
-	}
+
+void searchByID() {
+    system("cls");
+    item1 p1;
+    FILE *fp;
+    int j, pId, found = 0;
+    fp = fopen("Inventory.csv", "r");
+
+
+    printf("SEARCH FOR AN INVENTORY ITEM > by Item ID\n\n");
+        printf("\nProduct ID\tDescription\tQuantity\tExp Date\tPrice");
+        printf("\n%d\t%s\t%d\t%s\t%f", p1.itemID, p1.itemDesc, p1.quantity, p1.expiDate, p1.price);
+    printf("Enter Product ID to Search: ");
+    scanf("%5d", &pId);
+    
+    while(fread(&p1,sizeof(item1),1,fp))
+    {
+        if(p1.itemID == pId){
+            found = 1;
+            printf("\nProduct ID\tDescription\tQuantity\tExp Date\tPrice");
+            printf("\n%d\t%s\t%d\t%s\t%f", p1.itemID, p1.itemDesc, p1.quantity, p1.expiDate, p1.price);
+        }
+    }
+    if(!found) {
+        printf("\nRecord Not Found\n");
+        system("pause");
+    }
+
+    fclose(fp);
 }
 
+/*
+void display(){
+	printf("\n");
+	item1 item;
+	FILE *fp = fopen("Inventory.csv","r");
+	const char s1[5] = "\",\"";
+	const char s2[2] = "-";
+    char line[225];
+	while(fgets(line,sizeof(line),fp)){
+		char *token;
+        //char line[225];
+		token = strtok(line, s1);
+		while (token!=NULL){
+			printf("\t%-10s", token);
+			token = strtok(NULL, s1);
+		}
+		printf("\n");
+	}
+    fclose(fp);
+    return;	
+}
+*/
 
-int updateSearchID(item ptr[],int ino,int count)
-{
+int updateSearchID(){
+	//======================================
+	int ID, found, x;
+	int counter = 0;
+	printf("\n\nPlease input Item ID:\t\t");
+	scanf("%d", &ID);
+	//system("pause");
+	//printf("%d", ID);
+	//if ((ID<=0) || (ID>=100000)){
+	//	updateInvalidInput();
+	//	updateAgain();
+	//}
+		item1 item;
+		FILE *fp = fopen("Inventory.csv","r");
+		const char s1[5] = "\",\"";
+		const char s2[2] = "-";
+	    char line[100];
+		while(fgets(line,sizeof(line),fp)){
+			counter++;
+			char *token;
+			token = strtok(line, s1);
+			//int tempId = *token;
+			x = atoi(token);
+			//printf("temp is:\t%d\n",tempId);
+			//printf("token is :\t%d\n",&token);
+			//printf("X is :\t%d\n",&x);
+			if (ID == x){
+				clrscr();
+				printf("MAIN MENU > UPDATE INVENTORY ITEM\nYou will be updating:\nProduct ID\tDescription\t\tQuantity\tExp Date\tPrice\n");
+				while (token!=NULL){
+	            	found = 1;
+					printf("%-10s\t", token);
+					token = strtok(NULL, s1);
+				}
+				ID = 999999;
+				updateByID(x);
+			}
+			//else if(ID = 999999){
+			//		printf("\nNo ID found.");
+			//		break;}
+			printf("\nControl got here.");
+			break;
+		}
+		if (found == 0){
+			printf("\nNot found.");
+	    	return 0;
+		}
+	    fclose(fp);
+	    return 0;
+	
+}
+
+int updateSearchByID(item ptr[],int ino,int count){
 	int i;
 	for(i=0;i<count;i++)
 	{
@@ -231,76 +320,12 @@ int updateSearchID(item ptr[],int ino,int count)
 	return -1;
 }
 
-void updateByID(){
+int updateByID(int ID){
 	
-	struct item product[100];
+	struct item1 product;
 	int location;
-
-	FILE *fp=fopen("Inventory.csv","rb");
-	FILE *counter=fopen("counter.dat","r");
-
-	int count;
-	fscanf(counter,"%d",&count);
-
-	fread(&product, sizeof(product), 1, fp);
-	
-	printf("\n\nPlease Enter Item ID: ");
-	int itemID;
-	scanf("%d", &itemID);
-	
-	location=updateSearchID(product,itemID,count);
-	int i;
-	if(location!=-1)
-	{
-		//int updateSearch = product.itemID;
-		//product.itemID = updateCheckItemID(updateSearch,count);
-		
-		/*
-		for(i=location;i<count-1;i++)
-		{
-			product[i]=product[i+1];
-		}
-		count--;
-		printf("Record has been succesfully deleted\n");
-		*/
-
-		fclose(counter);
-
-		FILE *counterw=fopen("counter.dat","w");
-		fprintf(counterw,"%d",count);
-		fclose(counterw);
-		FILE *fpointer=fopen("Inventory.csv","rb");
-		FILE *counter=fopen("counter.dat","r");
-	
-		int count=0;
-	
-	
-		fscanf(counter,"%d",&count);
-		fread(&product, sizeof(product), 1, fpointer);
-		fclose(fpointer);
-	
-		/*
-		while (fread(&product,sizeof (item),1,fp))
-		{
-			count++;
-		}
-		*/
-		clrscr();
-		printf("MAIN MENU > UPDATE INVENTORY ITEM\nYou will be updating:\nProduct ID\tDescription\t\tQuantity\tExp Date\t\tPrice\n");
-	
-	
-		int i; 
-		for(i=0;i<count;i++)
-		{
-			printf("%5d\t",product[i].itemID);
-			printf("%20s\t",product[i].itemDesc);
-			printf("%5d\t",product[i].quantity);
-			printf("%4d/%2d/%2d\t",product[i].expiration.year,product[i].expiration.month,product[i].expiration.day);
-			printf("%.2f\n",product[i].price);
-		}
-		
-		//==============================
-		
+	//int count = updateNoofRec();
+	int itemID = ID;
 		
 			//updateItem();
 	
@@ -309,14 +334,14 @@ void updateByID(){
 	
 		//FILE *counter=fopen("counter.dat","r");
 		//int count;
-		fscanf(counter,"%d",&count);
-		fclose(counter);
+		//fscanf(counter,"%d",&count);
+		//fclose(counter);
 	
-		int itemID;
-		char itemDesc[50];
-		int quantity;
-		date expiration;
-		float price;
+		int newItemID;
+		char newItemDesc[20];
+		int newQuantity;
+		date newExpiDate;
+		float newPrice;
 		
 		printf("\nPlease Enter New Item Details (Enter '-' if not applicable):");
 		printf("\nEnter new Item ID:\t\t");
@@ -368,121 +393,6 @@ void updateByID(){
 			updateAgain();
 		}
 	}
-	else if(location==-1){
-		updateInvalidInput();
-		updateAgain();
-	}
-	
-	if (itemID<1 && itemID>999999999){
-		updateInvalidInput();
-		updateAgain();
-	}
-	/*
-	else{
-		product.itemID=updateCheckItemID(product.itemID,count);
-		
-		//=======================================
-		
-		FILE *fpointer=fopen("Inventory.csv","rb");
-		FILE *counter=fopen("counter.dat","r");
-	
-		int count=0;
-	
-	
-		fscanf(counter,"%d",&count);
-		fread(&product, sizeof(product), 1, fpointer);
-		fclose(fpointer);
-	
-		
-		//while (fread(&product,sizeof (item),1,fp))
-		//{
-		//	count++;
-		//}
-		
-		clrscr();
-		printf("MAIN MENU > UPDATE INVENTORY ITEM\nYou will be updating:\nProduct ID\tDescription\t\tQuantity\tExp Date\t\tPrice\n");
-	
-	
-		int i; 
-		for(i=0;i<count;i++)
-		{
-			printf("%10d\t",product[i].itemID);
-			printf("%12s\t",product[i].itemDesc);
-			printf("%5d\t",product[i].quantity);
-			printf("%4d/%2d/%2d\t",product[i].expiration.year,product[i].expiration.month,product[i].expiration.day);
-			printf("%.2f\n",product[i].price);
-		}
-		
-		//==============================
-		
-		
-			//updateItem();
-	
-		FILE *fp=fopen("Inventory.csv","w+");
-		fread(&product, sizeof(product),1,fp);
-	
-		//FILE *counter=fopen("counter.dat","r");
-		//int count;
-		fscanf(counter,"%d",&count);
-		fclose(counter);
-	
-		int itemID;
-		char itemDesc[50];
-		int quantity;
-		date expiration;
-		float price;
-		
-		printf("\nPlease Enter New Item Details (Enter '-' if not applicable):");
-		printf("\nEnter new Item ID:\t\t");
-		scanf("%d",itemID);
-		printf("\nEnter new Description:\t\t");
-		scanf("%s",itemDesc);
-		printf("\nEnter new Quantity:\t\t");
-		scanf("%d",quantity);
-		printf("\nEnter new Expiration Date: (yyy/mm/dd)\t\t");
-		scanf("%d/%d/%d",&product[count].expiration.year,&product[count].expiration.month,&product[count].expiration.day);
-		updateCheckingDate(&product[count].expiration.year,&product[count].expiration.month,&product[count].expiration.day);
-		printf("\nEnter new price:\t\t");
-		scanf("%f",price);
-	
-		//int i;
-		int flag=0;
-	    for(i=0;i<count;i++)
-	    {
-	
-	    	if(product[i].itemID==itemID)
-	    	{
-	    		flag=1;
-				product[i].itemID 		= itemID;
-				//product[i].itemDesc 	= itemDesc;
-				strcpy(product[i].itemDesc, itemDesc);
-				product[i].quantity 	= quantity;
-				product[i].expiration 	= expiration;
-				product[i].price 		= price;
-	    		break;
-	    	}
-	    	
-	    }
-	    
-	    if (flag==1)
-	    {
-			FILE *fp2=fopen("Inventory1.csv","wb");
-			fwrite(&product, sizeof(item), count, fp2);
-			remove("Inventory.csv");
-			rename("Inventory1.csv","Inventory.csv");
-			fclose(fp2);
-	
-			char ch;
-			updateAgain();
-		}
-	
-	    else
-	    {
-			updateInvalidInput();
-			updateAgain();
-		}
-	}
-	*/
 }
 
 void updateByDesc(){
@@ -499,24 +409,26 @@ void updateByDesc(){
 
 
 void mainMenu(){
-	int choice;
+	int choice = 999999;
 	do{
-		clrscr();
+		printf("\n");
+		//clrscr();
 		printf("MAIN MENU\n[1] Add Inventory Item\n[2] Update Inventory Item\n[3] View Inventory Item\n[4] Delete Inventory Item\n[0] Exit Program\n\nPlease input Choice: ");
 		scanf("%d", &choice);
 		    switch(choice){
-				case 1:{
-					printf("Your input is %d", choice); updateNoofRec(); display(); break; }
-				case 2:{					                                                          
-					printf("Your input is %d", choice); updateInventory(); break; }
+				case 1:{ 
+					updateInventory(); break; }
+				case 2:{ 
+					printf("Your input is %d", choice);  updateNoofRec(); updateSearchID(); break; }
 				case 3:{					
 					printf("Your input is %d", choice); updateItem(); break; }
 				case 4:{					
 					printf("Your input is %d", choice); break; }
 				case 0:{
-					printf("System Terminated."); choice = 0; break; }
+					printf("System Terminated.");  choice = 0; continue; break; }
 		    	default:{					
-					printf("This is default."); choice = 0; break; }
+					//printf("This is default."); 
+					choice = 999999; break; }
 			}
 			
 		    /* 
@@ -559,7 +471,8 @@ void mainMenu(){
 					break;
 			} */
 	}
-	while (choice==0);
+	while (choice==99999);
+	return;
 }
 
 int main(){
