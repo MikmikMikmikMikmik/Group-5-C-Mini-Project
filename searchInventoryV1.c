@@ -75,14 +75,15 @@ void viewAllProducts(){
     FILE *fp2;
     int j;
     char line[200];
-    fp2 = fopen("inventoryBinary.csv", "r");
+    fp2 = fopen("inventoryBinary.csv", "rb");
+    printf("Product ID\tDescription\tQuantity\tExp Date\tPrice");
     while(fread(&p1,sizeof(product),1,fp2))
     {
-        printf("\n%-5d%-20s   %d   %s    %f", p1.productID, p1.productName, p1.productQuantity, p1.productExpiration, p1.productPrice);
+        printf("\n%-5d       %-20s      %d      %s      %f", p1.productID, p1.productName, p1.productQuantity, p1.productExpiration, p1.productPrice);
     }
 
     printf("\n\n");
-    system("cls");
+    system("pause");
 
     fclose(fp2);
 }
@@ -117,7 +118,7 @@ void searchByID() {
     product p1;
     FILE *fp;
     int j, pId, found = 0;
-    fp = fopen("inventoryBinary.csv", "r");
+    fp = fopen("inventoryBinary.csv", "rb");
 
     printf("SEARCH FOR AN INVENTORY ITEM > by Item ID\n\n");
     printf("Enter Product ID to Search: ");
@@ -139,7 +140,7 @@ void searchByID() {
 
     
     printf("\n\n");
-    system("cls");
+    system("pause");
 
     fclose(fp);
 }
@@ -150,7 +151,7 @@ void searchByName() {
     FILE *fp;
     int j, found = 0;
     char pName[30];
-    fp = fopen("inventoryBinary.csv", "r");
+    fp = fopen("inventoryBinary.csv", "rb");
 
     printf("SEARCH FOR AN INVENTORY ITEM > by Item Name\n\n");
     printf("Enter Product Name to Search: ");
@@ -174,7 +175,7 @@ void searchByName() {
     }
 
     printf("\n\n");
-    system("cls");
+    system("pause");
     fclose(fp);
 }
 
