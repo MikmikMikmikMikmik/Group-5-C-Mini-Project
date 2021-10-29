@@ -2,8 +2,14 @@
 #include<stdlib.h>
 #include<ctype.h>
 #include<string.h>
-#include<conio.h>
 // fopen, fclose, getc, putc, getw, putw, fprintf, cputs, wputs, fputs
+
+typedef struct date
+{
+    int year;
+    int month;
+    int day;
+}date;
 
 typedef struct item
 {
@@ -20,7 +26,6 @@ void deleteMenu();
 
 int main()
 {
-    
     deleteMenu();
     return 0;
 
@@ -31,29 +36,37 @@ void addProduct()
 	item product;
     FILE *fp;
     fp = fopen("myINVENTORY.txt", "a");
+
     printf("\nEnter Product ID : ");
     scanf(" %d",&product.productID);
     printf("Enter Product Description : ");
     scanf(" %s",product.productDescription);
+
     printf("Enter Product Quantity : ");
     scanf(" %d",&product.quantity);
     printf("Enter Product Expiration : ");
     scanf(" %s",product.expiration);
     printf("Enter Product Price : ");
     scanf(" %f",&product.price);
+
     fwrite(&product, sizeof(item), 1, fp);
+
     fclose(fp);
+	
+
 }
 
 void display() 
 {
+    //int itemID = atoi(deleteItemID);
     item product;
     FILE *fp = fopen("Inventory_ST_xx.csv","r");
 	const char s1[5] = ",";
     char line[225];
-	printf("\nProduct ID\t\tDescription\t\tQuantity\tExp Date\tPrice\n");
+	printf("MAIN MENU > UPDATE INVENTORY ITEM\nProduct ID\t\tDescription\t\tQuantity\tExp Date\tPrice\n");
 	while(fgets(line,sizeof(line),fp)){
 		char *token;
+        //char line[225];
 		token = strtok(line, s1);
 		while (token!=NULL){
 			printf("\t%-10s", token);
@@ -61,7 +74,8 @@ void display()
 		}
 		printf("\n");
 	}
-    fclose(fp);           
+    fclose(fp);
+            
 }
 
 void deleteItem()
@@ -84,7 +98,7 @@ void deleteItem()
         valid = 1;
         for(i=0; i < strlen(deleteItemID); i++)
         {
-            if(isalpha(deleteItemID[i]) || strlen(deleteItemID) > 5)//CHECKING IF MAY LETRA SA ID
+            if(isalpha(deleteItemID[i]))
             {
                 valid = 0;
             }
@@ -92,7 +106,7 @@ void deleteItem()
         }
         if (valid == 0)  //INVALID ID
         {
-            printf("\nInvalid ID\n");
+            printf("Invalid ID");
         }
 
         else if (valid == 1) // VALID ID
@@ -126,11 +140,12 @@ void deleteItem()
                 {
                     if (field_count == 0)
                     {
+                        //printf("\n%s",field);
                         char *result = field+1;
                         result[strlen(result)-1] = '\0';
                         int realResult = atoi(result);
                         products[i].productID = realResult;
-                        if(products[i].productID == itemID)  //KUNG EXIST ANG ID NILAGAY
+                        if(products[i].productID == itemID)
                         {
                             found = 1;
                             printf("\n\nDO YOU WANT TO DELETE THIS ITEM???[Y][N] :");
@@ -138,9 +153,31 @@ void deleteItem()
                         }
                         else
                         {
+                            //fwrite(&products,sizeof(item),1,fpl);
                             fprintf(fpl, "%s", complete);
                         }
                     }
+                   /* if (field_count == 1)
+                    {
+                        strcpy(products[i].productDescription, field);
+                    }
+                    if (field_count == 2)
+                    {
+                        char *result = field+1;
+                        result[strlen(result)-1] = '\0';
+                        int quant = atoi(result);
+                       products[i].quantity = quant; 
+                    }
+                    if (field_count == 3)
+                    {
+                        strcpy(products[i].expiration, field);
+                    }
+                    if (field_count == 4)
+                    {
+                        char *result = field+1;
+                        result[strlen(result)-1] = '\0';
+                       products[i].price = strtod(result,NULL); 
+                    }*/
                     field = strtok(NULL, ",");
                     field_count++;
                 }
@@ -148,7 +185,7 @@ void deleteItem()
             }
             fclose(fp);
             fclose(fpl);
-            if (found == 1) // EXIST ANG ID
+            if (found == 1)
             {
                 printf(" ");
                 char choke[10];
@@ -160,7 +197,10 @@ void deleteItem()
                      char ch = fgetc(fpl);
                      while (ch != EOF)
                      {
+                        /* Write to destination file */
                         fputc(ch, fp);
+
+                        /* Read next character from source file */
                         ch = fgetc(fpl);
                      }
                      printf("\nDELETE SUCCESSFUL!!!!!!!\n\n");
@@ -179,6 +219,79 @@ void deleteItem()
             {
                 printf("\nItem Does Not Exist\n\n");
             }
+           // printf("%d",itemID);
+            //printf("%d",products[0].productID);
+           /* for(int x=0;x<sizeof(buff);x++)
+            {
+                if(products[x].productID == itemID)
+                       {
+                           printf("YAWA");
+                           printf("\n%d\n%s\n%d\n%s\n%.2f",products[x].productID, products[x].productDescription
+                           ,products[x].quantity,products[x].expiration,products[x].price);
+                           //found=1;
+                       }
+                //printf("\n%d",products[x].productID);
+            } */
+            
+           /* while (fread(&s1,sizeof(item),1,fp))
+            {
+                
+                if(s1.productID == itemID)
+                {
+                    found=1;
+                  printf("\n DO YOU WANT TO DELETE\n \nProduct ID     Description          Quantity     Exp Date         Price");
+                  printf("\n%-15d%-20s%-15d%-20s%-15f ? [Y/N] : ",s1.productID, s1.productDescription, s1.quantity, s1.expiration
+                     , s1.price);
+                   /* strcat(details, "daf");
+                    strcat(details, "   ");
+                    strcat(details, s1.productDescription);
+                    strcat(details, "   ");
+                    strcat(details, s1.quantity);
+                    strcat(details, "   ");
+                    strcat(details, s1.expiration);
+                    strcat(details, "   ");
+                    char price[20];
+                    sprintf(price, "%g", s1.price);
+                    strcat(details, price);
+                    strcat(details, "   ");
+                }
+                else
+                {
+                    fwrite(&s1,sizeof(item),1,fpl);
+                }
+            }*/
+            /*fclose(fp);jujuju
+            fclose(fpl);
+            if (found)
+            {
+                printf(" ");
+                char choke[10];
+                scanf(" %s",&choke);
+                if(strcmp (choke, "Y") == 0 || strcmp (choke, "y") == 0)
+                {
+                     fpl = fopen("temp.txt","r");
+                     fp = fopen("myINVENTORY.txt","w");
+                     while (fread(&s1,sizeof(item),1,fpl))
+                     {
+                        fwrite(&s1,sizeof(item),1,fp);
+                     }
+                     printf("\nDELETE SUCCESSFUL!!!!!!!\n\n");
+                     fclose(fp);
+                     fclose(fpl);
+                     deleteSuccess = 1;
+                }
+                else
+                {
+                    deleteSuccess = 1;
+                    deleteItem();
+                }
+               
+            }
+            else
+            {
+                printf("\nItem Does Not Exist\n\n");
+            }*/
+           
          }
     }
 }
