@@ -86,6 +86,7 @@ void viewAllProducts(){
     system("pause");
 
     fclose(fp2);
+    searchMenu();
 }
 
 void viewInventory() {
@@ -122,18 +123,19 @@ void searchByID() {
 
     printf("SEARCH FOR AN INVENTORY ITEM > by Item ID\n\n");
     printf("Enter Product ID to Search: ");
-    scanf("%5d", &pId);
-    
+    scanf(" %5d", &pId);
+
+    printf("\nProduct ID\tDescription\tQuantity\tExp Date\tPrice");
     while(fread(&p1,sizeof(product),1,fp))
     {
         if(p1.productID == pId){
             found = 1;
-            printf("\nProduct ID\tDescription\tQuantity\tExp Date\tPrice");
+            
             printf("\n%d\t%s\t%d\t%s\t%f", p1.productID, p1.productName, p1.productQuantity, p1.productExpiration, p1.productPrice);
         }
     }
     if(!found) {
-        printf("\nItem ID does not exist!\n\n");
+        printf("\n\nItem ID does not exist!\n\n");
         system("pause");
         searchMenu();
     }
@@ -141,8 +143,10 @@ void searchByID() {
     
     printf("\n\n");
     system("pause");
-
+    
     fclose(fp);
+    searchMenu();
+
 }
 
 void searchByName() {
@@ -162,14 +166,13 @@ void searchByName() {
     printf("Product ID\tDescription\tQuantity\tExp Date\tPrice");
     while(fread(&p1,sizeof(product),1,fp))
     {
-        printf("%s", p1.productName);
         if(strcmp(p1.productName, pName) == 0 ){
             found = 1;
             printf("\n%-5d%-20s   %d   %s    %f", p1.productID, p1.productName, p1.productQuantity, p1.productExpiration, p1.productPrice);
         }
     }
     if(!found) {
-        printf("\nItem ID does not exist!\n\n");
+        printf("\n\nItem Name does not exist!\n\n");
         system("pause");
         searchMenu();
     }
@@ -177,6 +180,7 @@ void searchByName() {
     printf("\n\n");
     system("pause");
     fclose(fp);
+    searchMenu();
 }
 
 void searchMenu() {
