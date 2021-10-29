@@ -20,9 +20,9 @@ typedef struct date
 
 typedef struct item1{
 	unsigned int itemID;
-	char itemDesc[10];
+	char itemDesc;
 	unsigned short quantity;
-	char expiDate[10];
+	char expiDate;
 	float price;
 }item1;
 
@@ -43,7 +43,7 @@ typedef struct item
 	int itemID;
 	char itemDesc;
 	int quantity;
-	char expiration;
+	char expiDate;
 	float price;
 }item;
 
@@ -51,13 +51,13 @@ void mainMenu();
 void updateByDesc();
 void updateAgain();
 void updateInvalidInput(int invType);
-void updateItem();
+void addAllFromBackUp();
 void updateInventory();
 
 char* updateCheckingDate(int day,int month,int year);
 
 int updateCheckItemID(int itemID, int count);
-int updateByID(int ID);
+int updateProcess(int ID);
 int updateSearch();
 
 void updateInventoryMenu(){
@@ -154,7 +154,7 @@ void updateSuccessful(){
 	abort();
 }
 
-void updateItem(){
+void addAllFromBackUp(){
 	
 	item *addTheBackUp;
 	
@@ -168,40 +168,40 @@ void updateItem(){
 	char *token;
 	char delimit [] = "\",\"";
     char line[999];
-	token = strtok(line, delimit);
 	int counter = 0;
+	int tokenCount = 5;
 	int i;
 	
+	
 	while(fgets(line,sizeof(line),fpointer2)){
-		
-		addTheBackUp[i].itemID = atoi(token);
-		token = strtok(NULL, delimit);
-		addTheBackUp[i].itemDesc = token;
-		token = strtok(NULL, delimit);
-		addTheBackUp[i].quantity = atoi(token);
-		token = strtok(NULL, delimit);
-		addTheBackUp[i].expiration = token;
-		token = strtok(NULL, delimit);
-		addTheBackUp[i].price = atoi(token);
-		token = strtok(NULL, delimit);
-		counter++;
+		token = strtok(line, delimit);
+		while (token != NULL){
+			if(tokenCount != 0){
+				if(tokenCount != 1){
+					fprintf(fpointer,"\"%s\",", token);
+					token = strtok(NULL, delimit);
+					tokenCount--;
+				}
+				else{
+					fprintf(fpointer,"\"%s\"", token);
+					tokenCount--;
+					token = strtok(NULL, delimit);
+				}
+			}
+			else{
+				fprintf(fpointer,"\n");
+				tokenCount = 5;
+				token = strtok(NULL, delimit);
+			}
+		}
 	}
+	printf("\n\nInventory file reset!\n\n");
 	
-	
-	for (i = 0; i<500;i++){
-		fprintf(fpointer, "\"%d\",\"%s\",\"%d\",\"%s\",\"%.2f\"\n", addTheBackUp[i].itemID, addTheBackUp[i].itemDesc, addTheBackUp[i].quantity, addTheBackUp[i].expiration, addTheBackUp[i].price);
-		//fprintf(fp2, "\"%5d\",\"%30s\",\"%d\",\"%10s\",\"%.2f\"\n", updatedInventory[i].itemID, updatedInventory[i].itemDesc, updatedInventory[i].quantity, updatedInventory[i].expiDate, updatedInventory[i].price);
-	}
-	
-	printf("\n\nInventory file reset!");
-	
-	//fprintf(fpointer, "11101,Nat. Spring (500mL),200,-,10.50\n11201,Nat. Spring (1L),100,-,16.00\n11202,Nat. Spring (1L),300,-,16.50\n12101,Datu Puti Vinegar (1L),100,2022-03-22,38.25\n51101,Nivea Silver Protect (50mL),50,2023-08-31,45.00\n");
-	//fprintf(fpointer, "21101,Kalapati (500mL),200,-,10.50\n21201,Crocodile (1L),100,-,16.00\n21202,Nat. Lion (1L),300,-,16.50\n12101,22101 Daga Vinegar (1L),100,2022-03-22,38.25\n61101,Nivea Silver Anaconda,50,2023-08-31,45.00\n");
- 	//fprintf(fpointer, "\"11101\",\"Nat. Spring (500mL)\",\"200\",\"-\",\"10.50\"\n\"11201\",\"Nat. Spring (1L)\",\"100\",\"-\",\"16.00\"\n\"11202\",\"Nat. Spring (1L)\",\"300\",\"-\",\"16.50\"\n\"12101\",\"Datu Puti Vinegar (1L)\",\"100\",\"2022-03-22\",\"38.25\"\n\"51101\",\"Nivea Silver Protect (50mL)\",\"50\",\"2023-08-31\",\"45.00\"\n");
-	//fprintf(fpointer, "\"21101\",\"Kalapati\",\"200\",\"-\",\"10.50\"\n\"21201\",\"Crocodile\",\"100\",\"-\",\"16.00\"\n\"21202\",\"Lion\",\"300\",\"-\",\"16.50\"\n\"22101\",\"Daga\",\"100\",\"2022-03-22\",\"38.25\"\n\"61101\",\"Anaconda\",\"50\",\"2023-08-31\",\"45.00\"\n");
+	rename("Database\\Inventory.txt","Database\\Inventory.csv");
 	
 	fclose(fpointer);
 	fclose(fpointer2);
+	system("pause");
 	mainMenu();
 	
 	}
@@ -241,175 +241,211 @@ char* updateCheckingDate(int day,int month,int year)
 
 
 int totalInventory;
-void display(){
-	//printf("\n")
+void displayAllItems(){
 	int totalInventory;
 	item1 item;
 	int count;
 	FILE *fp = fopen("Database\\Inventory.csv","r");
-	//const char s1[5] = ",";
-	const char s1[5] = "\",\"";
+	const char s1[5] = ",\"";
     char line[225];
-	printf("MAIN MENU > UPDATE INVENTORY ITEM\nProduct ID\t\tDescription\t\tQuantity\tExp Date\tPrice\n");
+	printf("MAIN MENU > UPDATE INVENTORY ITEM\n\tProduct ID\tDescription\t\tQuantity\tExp Date\tPrice\n");
 	while(fgets(line,sizeof(line),fp)){
 		char *token;
 		count++;
-        //char line[225];
 		token = strtok(line, s1);
 		while (token!=NULL){
-			printf("%-10s", token);
+			printf("\t%s", token);
 			token = strtok(NULL, s1);
 		}
-		//printf("\n");
 	}
 	totalInventory = count;
     fclose(fp);
-	printf("Total No. of items in the Inventory: \t %d\n\n", totalInventory);
+	printf("\n\nTotal No. of items in the Inventory: \t %d\n\n", totalInventory);
     system("pause");
     clrscr();
     mainMenu();
 	abort();
 }
 
+int indexOfSubString(char str[], char s[]){
+	int i,j,k,l;
+	l = strlen(s);
+	for (i=0; str[i+l-1]; i++){
+		k = i;
+		for (i=0; str[i+l-1]; i++){
+			if (str[k] != s[j]){
+				break;
+				k++;
+			}
+			if(j==l)
+			return 1;
+		}
+		return -1;
+	}
+
+}
+
+void updateSelectedID(int ID){
+	
+	FILE *fp = fopen("Database\\Inventory.csv","r");
+	
+	int z, found;
+	const char s1[5] = "\",\"";
+    char line[225];
+	while(fgets(line,sizeof(line),fp)){
+		while (ID != z) {
+			char *token;
+			token = strtok(line, s1);
+			z = atoi(token);
+			if (ID == z){
+				clrscr();
+				printf("MAIN MENU > UPDATE INVENTORY ITEM\nYou will be updating:\nProduct ID\tDescription\t\tQuantity\tExp Date\tPrice\n");
+				while (token!=NULL){
+	            	found = 1;
+					printf("%-10s\t", token);
+					token = strtok(NULL, s1);
+				}
+				ID = '\0';
+	    		fclose(fp);
+				updateProcess(z);
+				abort();
+			}
+			token = strtok(NULL, s1);
+			break;
+		}
+	}
+	fclose(fp);
+	if (found == 0){
+	    fclose(fp);
+		updateInvalidInput(0);
+		updateAgain();
+		abort();
+	}
+}
+
 
 int updateSearch(int searchChoice){
 	
 	int sChoice = searchChoice;
-	do{
 	char itemDesc[20];
 	char *x;
 	int ID, found, z;
 	int counter = 1;
 	item1 item;
-	FILE *fp = fopen("Database\\Inventory.csv","r");
-	const char s1[5] = "\",\"";
-			
-	if (sChoice == 1){
-		printf("\nPlease input Item ID:\t\t");
-		scanf("%d", &ID);
-		if ((ID<=0) || (ID>=100000)){
-			updateInvalidInput(0);
-			updateAgain();
-			abort();
-		}
-		else{
-		    char line[225];
-			while(fgets(line,sizeof(line),fp)){
-				while (ID != z) {
-					counter++;
-					char *token;
-					token = strtok(line, s1);
-					//int tempId = *token;
-					z = atoi(token);
-					//printf("temp is:\t%d\n",tempId);
-					//printf("token is :\t%d\n",&token);
-					//printf("X is :\t%d\n",&x);
-					if (ID == z){
-						clrscr();
-						printf("MAIN MENU > UPDATE INVENTORY ITEM\nYou will be updating:\nProduct ID\tDescription\t\tQuantity\tExp Date\tPrice\n");
-						while (token!=NULL){
-			            	found = 1;
-							printf("%-10s\t", token);
-							token = strtok(NULL, s1);
-						}
-						ID = '\0';
-			    		fclose(fp);
-						updateByID(z);
-						abort();
-					}
-					token = strtok(NULL, s1);
-					break;
-				}
-			}
-			fclose(fp);
-			if (found == 0){
-				printf("\nNot found.");
-			    fclose(fp);
+	do{
+		FILE *fp = fopen("Database\\Inventory.csv","r");
+		const char s1[5] = "\",\"";
+				
+		if (sChoice == 1){
+			printf("\nPlease input Item ID:\t\t");
+			scanf("%d", &ID);
+			if ((ID<=0) || (ID>=100000)){
 				updateInvalidInput(0);
 				updateAgain();
 				abort();
 			}
-		    fclose(fp);
-			updateInvalidInput(0);
-			updateAgain();
+			else{
+				updateSelectedID(ID);
+			}
 		}
-	}
-	else if (sChoice == 2){
-		printf("\n\nPlease Enter Item Desc:\t\t");
-		scanf(" %[^\n]%*c", itemDesc);
-		int j;
-		for(j = 0; itemDesc[j] != '\0'; j++){
-			if (itemDesc[j]>='a' && itemDesc[j]<='z' || itemDesc[j]>='A' && itemDesc[j]<='Z'){
-			    char line[225];
-				char *ret;
-				ret = strstr(x, itemDesc);
-				printf("The substring is: %s\n", ret);
-				while(fgets(line,sizeof(line),fp)){
-					while (!(strstr(x, itemDesc))) {
-						counter++;
-						char *token;
-						token = strtok(line, s1);
-						//int tempId = *token;
-						x[10] = atoi(token);
-						//printf("temp is:\t%d\n",tempId);
-						//printf("token is :\t%d\n",&token);
-						//printf("X is :\t%d\n",&x);
-						if (ret){
-							clrscr();
-							printf("MAIN MENU > UPDATE INVENTORY ITEM\nYou will be updating:\nProduct ID\tDescription\t\tQuantity\tExp Date\tPrice\n");
-							while (token!=NULL){
-				            	found = 1;
-								printf("%-10s\t", token);
-								token = strtok(NULL, s1);
-							}
-							ID = '\0';
-				    		fclose(fp);
-							abort();
+		else if (sChoice == 2){
+				
+			int totalInventory;
+			item1 item;
+			int count;
+			FILE *fp = fopen("Database\\Inventory.csv","r");
+			
+			printf("\n\nPlease Enter Item Desc:\t\t");
+			scanf(" %[^\n]%*c", itemDesc);
+			fgets(itemDesc, sizeof itemDesc, stdin);
+			
+			
+			
+			int j;
+			for(j = 0; itemDesc[j] != '\0'; j++){
+				if (!(itemDesc[j]>='a' && itemDesc[j]<='z' || itemDesc[j]>='A' && itemDesc[j]<='Z')){
+					if(!((itemDesc[j] == '.') || (itemDesc[j] == '/') || (itemDesc[j] == '-')) != NULL){
+						if (!(itemDesc[j] >='0' && itemDesc[j] <='9')){
+							printf("\n\nThis is a good String\t\t");
+							break;
 						}
-						token = strtok(NULL, s1);
-						break;
 					}
 				}
-				fclose(fp);
-				if (found == 0){
-					printf("\nNot found.");
-				    fclose(fp);
+				else{
 					updateInvalidInput(0);
-					updateAgain();
-					abort();
 				}
 			}
-			else{
+			//Problem here ==========================================
+			
+			
+			system("pause");
+			clrscr();
+			
+			int index;
+			const char s1[5] = ",\"";
+		    char line[225];
+			printf("MAIN MENU > UPDATE INVENTORY ITEM\n\tProduct ID\tDescription\t\tQuantity\tExp Date\tPrice\n");
+			
+			char *previousToken;
+			
+			while(fgets(line,sizeof(line),fp)){
+				char *token;
+				count++;
+				token = strtok(line, s1);
+				previousToken = token;
+				while (token!=NULL){
+					index = indexOfSubString(token, itemDesc);
+					if (index == -1){
+						printf("\t%s", previousToken);
+						printf("\t%s", token);
+						printf("\t%s", token);
+						printf("\t%s", token);
+						printf("\t%s", token);
+						printf("\t%s", token);
+						token = strtok(NULL, s1);
+					}else{	
+						previousToken = token;
+						token = strtok(NULL, s1);
+					}
+				}
+			totalInventory = count;
+		    fclose(fp);
+			}
+			
+			
+			
+			/*
+			int found;
+			
+		    while(fread(&item,sizeof(item),1,fp))
+	    	{
+	        	if(strcmp(item.itemDesc, itemDesc) == 0 ){
+	            	found = 1;
+		            printf("\n%d\t%-20s\t%d\t%s\t%.2f", item.itemID, item.itemDesc , item.quantity , item.expiDate , item.price);
+	    	    }
+	    	}
+	    	if(!found) {
+	        	printf("\n\nItem Name does not exist!\n\n");
+	        	system("pause");
+	        	updateAgain();
+	    	}
+	    	
+			*/
+	    	
+			printf("\nPlease input Item ID of Item from the List:\t\t");
+			scanf("%d", &ID);
+			if ((ID<=0) || (ID>=100000)){
 				updateInvalidInput(0);
 				updateAgain();
+				abort();
+			}
+			else{
+				updateSelectedID(ID);
 			}
 		}
-		    fclose(fp);
-			updateInvalidInput(0);
-			updateAgain();
-		}
-		//else{
-		//	updateInvalidInput(0);
-		//	updateAgain();
-		//	abort();
-		//}
 	}while(sChoice!=0);
 }
 
-
-/*
-void updateSearchByID(){
-	int i;
-	for(i=0;i<count;i++)
-	{
-		if(ino==ptr[i].itemID)
-		{
-			return i;
-		}
-	}
-	return -1;
-}
-*/
 
 int updateCheckItemID(int ID, int newID){
 	
@@ -433,27 +469,19 @@ int updateCheckItemID(int ID, int newID){
 			counter++;
 			char *token;
 			token = strtok(line, s1);
-			//int tempId = *token;
 			z = atoi(token);
-			//printf("temp is:\t%d\n",tempId);
-			//printf("token is :\t%d\n",&token);
-			//printf("X is :\t%d\n",&x);
-			
 			if ((newitemID != tempID) && (newitemID == z)){
 				clrscr();
 				printf("MAIN MENU > UPDATE INVENTORY ITEM\nThis Item ID is already taken by:\nProduct ID\tDescription\t\tQuantity\tExp Date\tPrice\n");
 				while (token!=NULL){
-					//printf("%-10s\t", token);
 					switch(tokenCount){
 						case 0: {
 							int otherInt = token;
-							//strncpy existingID_itemID = otherInt;
 							strcpy(existingID_itemID, otherInt);
 							printf("%-10d\t", existingID_itemID);
 							break;
 						}
 						case 1:{
-							//existingID_itemDesc[30] = token;
 							strcpy(existingID_itemDesc, token);
 							printf("%-10s\t", existingID_itemDesc);
 							break;
@@ -464,7 +492,6 @@ int updateCheckItemID(int ID, int newID){
 							break;
 						}
 						case 3:{
-							//existingID_expiDate[30] = token;
 							strcpy(existingID_expiDate, token);
 							printf("%-10s\t", existingID_expiDate);
 							break;
@@ -496,7 +523,7 @@ int updateCheckItemID(int ID, int newID){
 	}
 }
 
-int updateByID(int ID){
+int updateProcess(int ID){
 	
 	item1 itemOnHold;
 	int location;
@@ -514,7 +541,7 @@ int updateByID(int ID){
 	char *currentItemExp = malloc(sizeof(char) * (11));  
 	currentItemExp[10] = '\0';
 	float currentItemPri;
-	char expiration[10];
+	char expiration;
 	
 	//These are variable for new details of item to be updated
 	int newItemID;
@@ -541,16 +568,6 @@ int updateByID(int ID){
 		printf("\nInventory file does not exist!\n");
 		return 0;
 	}
-		
-	//updateItem();
-	//FILE *fp=fopen("Database\\Inventory.csv","w+");
-	//fread(&product, sizeof(product),1,fp);
-	//FILE *counter=fopen("counter.dat","r");
-	//int count;
-	//fscanf(counter,"%d",&count);
-	//fclose(counter);
-	
-	//count = updateNoofRec();
 	
 	
 	//This part is for user input and counterchecking if input is appropriate
@@ -576,8 +593,8 @@ int updateByID(int ID){
 	
 	printf("\nEnter new Expiration Date: (yyyy/mm/dd)\t\t");
 	int year, month, day;
-	scanf("%d/%d/%d",&year,&month,&day);
-	if (year && month && day  != NULL){
+	scanf("%d-%d-%d",&year,&month,&day);
+	if ((year && month && day)  != NULL){
 		updateCheckingDate(year, month, day);
 	}
 	else{
@@ -600,77 +617,58 @@ int updateByID(int ID){
 	int tokenCount = 1;
 	const char s1[5] = "\",\"";
 	char line[225];
-		while(fgets(line,sizeof(line),fp1)){
-			char *token;
-			token = strtok(line, s1);
-			//int tempId = *token;
-			z = atoi(token);
-			//printf("temp is:\t%d\n",tempId);
-			//printf("token is :\t%d\n",&token);
-			//printf("X is :\t%d\n",&x);
-			if ((newItemID == itemID) && (z == itemID)){
-				printf("MAIN MENU > UPDATE INVENTORY ITEM\nCurrent Product Details:\nProduct ID\tDescription\t\tQuantity\tExp Date\tPrice\n");
-				while (token!=NULL){
-					//printf("%-10s\t", token);
-					switch(tokenCount){
-						case 1: {
-							itemOnHold_itemID = atoi(token);
-							//strcpy(itemOnHold_itemID, token);
-							printf("%-10d\t", itemOnHold_itemID);
-							break;
-						}
-						case 2:{
-							//itemOnHold_itemDesc = token;
-							strcpy(itemOnHold_itemDesc, token);
-							//printf("mark lang malakas");
-							printf("%-10s\t", itemOnHold_itemDesc);
-							break;
-						}
-						case 3:{
-							//itemOnHold_quantity = atoi(token);
-							strcpy(itemOnHold_quantity, token);
-							//printf("mark lang malakas");
-							printf("%-10d\t", itemOnHold_quantity);
-							break;
-						}
-						case 4:{
-							//itemOnHold_expiDate[30] = token;
-							strcpy(itemOnHold_expiDate, token);
-							//printf("mark lang malakas");
-							printf("%-10s\t", itemOnHold_expiDate);
-							break;
-						}
-						case 5:{
-							//printf("mark lang malakas");
-							char *unconverted;
-							double value = strtod(token, &unconverted);
-							itemOnHold_price = value;
-							printf("%-10.2f\t", itemOnHold_price);
-							break;
-						}
-						default: {
-							token = strtok(NULL, s1);
-							break;
-						}
+	
+	while(fgets(line,sizeof(line),fp1)){
+		char *token;
+		token = strtok(line, s1);
+		z = atoi(token);
+		if (z == itemID){
+			printf("MAIN MENU > UPDATE INVENTORY ITEM\nCurrent Product Details:\nProduct ID\tDescription\t\tQuantity\tExp Date\tPrice\n");
+			while (token!=NULL){
+				switch(tokenCount){
+					case 1: {
+						itemOnHold_itemID = atoi(token);
+						printf("%d\t", itemOnHold_itemID);
+						break;
 					}
-					tokenCount++;
-					//token = strtok(NULL, s1);
+				case 2:{
+						strcpy(itemOnHold_itemDesc, token);
+						printf("%s\t", itemOnHold_itemDesc);
+						break;
+					}
+					case 3:{
+						itemOnHold_quantity = atoi(token);
+					printf("%d\t", itemOnHold_quantity);
+						break;
+					}
+					case 4:{
+						strcpy(itemOnHold_expiDate, token);
+						printf("%s\t", itemOnHold_expiDate);
+						break;
+					}
+					case 5:{
+						char *unconverted;
+						double value = strtod(token, &unconverted);
+						itemOnHold_price = value;
+						printf("%.2f\t", itemOnHold_price);
+						break;
+					}
+					default: {
+						break;
+					}
 				}
+				tokenCount++;
+				token = strtok(NULL, s1);
 			}
-		counter++;
 		}
+	counter++;
+	}
 		
 	fclose(fp1);
 	fclose(fp2);
 	
-	totalInventory = counter;
-	
 	printf("\n\nUpdated Product Details:\nProduct ID\tDescription\t\tQuantity\tExp Date\tPrice\n%-10d\t%-10s\t%-10d\t%-10s\t%-10.2f\n", newItemID, newItemDesc, newQuantity, expiration, newPrice);
-		
-	fp1 = fopen("Database\\Inventory.csv", "r");
-	fp2 = fopen("Database\\copyInventory.csv","w");
-		
-		
+	
 	char ch;
 	printf("\nProceed with update?\n[Y] Yes\n[N] No\n\nPlease input choice: ");
 	getchar();
@@ -681,398 +679,119 @@ int updateByID(int ID){
 	}
 		
 	int x, i;
-	//item1 invUpdate;
-	//int itemCount;
-	//fscanf(fp3, "%i", &itemCount);
-	printf("\nTotal No. of items:  %d\n", &totalInventory);
-	int scanCount = 0;
-	item1 *updatedInventory = malloc(sizeof(item1) * totalInventory); 
-	
-	for (i = 0; i < totalInventory; i++){
 		
-		char *currentDesc = malloc(sizeof(char)* (itemDescLen + 1));
-		currentDesc[itemDescLen] = '\0';
-		unsigned short currentItemID;
-		unsigned short currentItemQua;
-		char *currentItemExp = malloc(sizeof(char) * (11));  
-		currentItemExp[10] = '\0';
-		float currentItemPri;
-		char expiration[10];
-		
-		while(!feof){
-			while(fgets(line,sizeof(line),fp1)){
-				char *token;
-				token = strtok(line, s1);
-				//int tempId = *token;
-				z = atoi(token);
-				//printf("temp is:\t%d\n",tempId);
-				//printf("token is :\t%d\n",&token);
-				//printf("X is :\t%d\n",&x);
-			if (z != newItemID){
-					printf("This is a test I've entered the if z != newItemID");
-					while (token!=NULL){
-						//printf("%-10s\t", token);
-						switch(tokenCount){
-							case 1: {
-								updatedInventory[counter].itemID = atoi(token);
-								//strcpy(itemOnHold_itemID, token);
-								printf("%-10d\t", updatedInventory[counter].itemID);
-								break;
-							}
-							case 2:{
-								//itemOnHold_itemDesc = token;
-								strcpy(updatedInventory[counter].itemDesc, token);
-								//printf("mark lang malakas");
-								printf("%-10s\t", updatedInventory[counter].itemDesc);
-							break;
-								}
-							case 3:{
-								//itemOnHold_quantity = atoi(token);
-								strcpy(updatedInventory[counter].quantity, token);
-								//printf("mark lang malakas");
-								printf("%-10d\t", itemOnHold_quantity);
-								break;
-							}
-							case 4:{
-								//itemOnHold_expiDate[30] = token;
-								strcpy(updatedInventory[counter].expiDate, token);
-								//printf("mark lang malakas");
-								printf("%-10s\t", itemOnHold_expiDate);
-								break;
-							}
-							case 5:{
-								//printf("mark lang malakas");
-								char *unconverted;
-								double value = strtod(token, &unconverted);
-								updatedInventory[counter].price = value;
-								printf("%-10.2f\t", updatedInventory[counter].price);
-								break;
-							}
-							default: {
-								token = strtok(NULL, s1);
-								break;
-							}
-						}
-						tokenCount++;
-					//token = strtok(NULL, s1);
-					}
-					
-					printf("\nI'm copying old data\n");
-					printf("\"%d\",\"%s\",\"%d\",\"%s\",\"%.2f\"\n", updatedInventory[counter].itemID, updatedInventory[counter].itemDesc, updatedInventory[counter].quantity, updatedInventory[counter].expiDate, updatedInventory[counter].price);
-		
-				}
-				else{
-					updatedInventory[scanCount].itemID = newItemID;
-					strcpy(updatedInventory[scanCount].itemDesc, newItemDesc);
-					updatedInventory[scanCount].quantity = newQuantity;
-					strcpy(updatedInventory[scanCount].expiDate, expiration);
-					updatedInventory[scanCount].price = newPrice;
-					
-					
-				printf("\nI'm copying new data\n");
-				printf("%5d, %s, %d, %s, %.2f\n", updatedInventory[updateCount].itemID, updatedInventory[updateCount].itemDesc, updatedInventory[updateCount].quantity, updatedInventory[updateCount].expiDate, updatedInventory[updateCount].price);
-				
-				}
-			}
-		}
-		
-		/*fscanf(fp1, "\"%d\",\"%s\",\"%d\",\"%s\",\"%.2f\"", &currentItemID, currentDesc, &currentItemQua, currentItemExp, &currentItemPri);
-			
-		if (itemID != currentItemID){
-			updatedInventory[scanCount].itemID = currentItemID;
-			strcpy(updatedInventory[scanCount].itemDesc, currentDesc);
-			updatedInventory[scanCount].quantity = currentItemQua;
-			strcpy(updatedInventory[scanCount].expiDate, currentItemExp);
-			updatedInventory[scanCount].price = currentItemPri;
-		}
-		else{
-			updatedInventory[scanCount].itemID = newItemID;
-			strcpy(updatedInventory[scanCount].itemDesc, newItemDesc);
-			updatedInventory[scanCount].quantity = newQuantity;
-			strcpy(updatedInventory[scanCount].expiDate, expiration);
-			updatedInventory[scanCount].price = newPrice;
-		}
-		scanCount++;
-		
-		/*
-		while(fgets(line,sizeof(line),fp1)){
-			char *token;
-	        //char line[225];
-			token = strtok(line, s1);
-			while (token!=NULL){
-				printf("\t%-10s", token);
-				token = strtok(NULL, s1);
-		}
-		*/
-	}
-	
-	for (i = 0; i < totalInventory; i++){
-		printf("\"%5d\",\"%s\",\"%d\",\"%s\",%.2f\"\n", updatedInventory[i].itemID, updatedInventory[i].itemDesc, updatedInventory[i].quantity, updatedInventory[i].expiDate, updatedInventory[i].price);
-		//fprintf(fp4, "%i", updateCount);		
-		fprintf(fp2, "\"%5d\",\"%30s\",\"%d\",\"%10s\",\"%.2f\"\n", updatedInventory[i].itemID, updatedInventory[i].itemDesc, updatedInventory[i].quantity, updatedInventory[i].expiDate, updatedInventory[i].price);
-	}
-	system("pause");
-	
-		
-		fclose(fp1);
-		fclose(fp2);
-	
-		//const char s1[5] = "\",\"";
-		/*
 	fp1 = fopen("Database\\Inventory.csv", "r");
 	fp2 = fopen("Database\\copyInventory.csv","w");
 	
+	int scanCount = 0;
+	item1 *updatedInventory = malloc(sizeof(item1) * totalInventory); 
 	
-	updatedInventory= malloc(sizeof(item1) * totalInventory);
-	counter = 0;
-	tokenCount = 0;
-	while(!feof){
-		while(fgets(line,sizeof(line),fp1)){
-			while (tempID != z) {
-				char *token;
-				token = strtok(line, s1);
-				z = atoi(token);
-				
-				if (z!=newItemID){
-					while (token!=NULL){
-						switch(tokenCount){
-							case 0: {
-								updatedInventory[counter].itemID = token;
-								break;
-							}
-							case 1:{
-								strcpy(updatedInventory[counter].itemDesc, token);
-								break;
-							}
-							case 2:{
-								updatedInventory[counter].quantity = token;
-								break;
-							}
-							case 3:{
-								strcpy(updatedInventory[counter].expiDate, token);
-								break;
-							}
-							case 4:{
-								char *unconverted;
-								double value = strtod(token, &unconverted);
-								updatedInventory[counter].price = value;
-								break;
-							}
-							default: {
-								token = strtok(NULL, s1);
-								break;
-							}
-						}
-						printf("\nI'm copying old data\n");
-						printf("\"%d\",\"%30s\",\"%d\",\"%s\",\"%.2f\"\n", updatedInventory[counter].itemID, updatedInventory[counter].itemDesc, updatedInventory[counter].quantity, updatedInventory[counter].expiDate, updatedInventory[counter].price);
-		
-						tokenCount++;
+	tokenCount = 5;
+	
+	while(fgets(line,sizeof(line),fp1)){
+		char *token;
+		token = strtok(line, s1);
+		z = atoi(token);
+		while (token != NULL){
+			if (z == newItemID){
+				int j;
+				for (j = 0; j < 5; j++){
+					token = strtok(NULL, s1);
+				}
+				fprintf(fp2, "\"%d\",\"%s\",\"%d\",\"%s\",\"%.2f\"\n", newItemID, newItemDesc, newQuantity, expiration, newPrice);
+				break;
+			}
+			else{
+				if(tokenCount != 0){
+					if(tokenCount != 1){
+						fprintf(fp2,"\"%s\",", token);
+						token = strtok(NULL, s1);
+						tokenCount--;
+					}
+					else{
+						fprintf(fp2,"\"%s\"", token);
+						tokenCount--;
 						token = strtok(NULL, s1);
 					}
-				}else{
-					strcpy(updatedInventory[counter].itemDesc, newItemDesc);
-					updatedInventory[counter].itemID = newItemID;
-					updatedInventory[counter].quantity = newQuantity;
-					
-					// This is for converting struct date into string
-					memcpy(expiration, &newExpiDate, sizeof expiration);
-					strcpy(updatedInventory[counter].expiDate, expiration);
-					//===============================
-					
-					//strcpy(updatedInventory[counter].expiDate, newExpiDate);
-					updatedInventory[counter].price = newPrice;
-					
-					printf("\nI'm copying new data\n");
-					printf("\"%d\",\"%30s\",\"%d\",\"%s\",\"%.2f\"\n", updatedInventory[counter].itemID, updatedInventory[counter].itemDesc, updatedInventory[counter].quantity, updatedInventory[counter].expiDate, updatedInventory[counter].price);
-					tokenCount++;
 				}
-				counter++;
-				fclose(fp1);
-				fclose(fp2);
-				break;
+				else{
+					fprintf(fp2,"\n");
+					tokenCount = 5;
+					token = strtok(NULL, s1);
+				}
 			}
 		}
 	}
-	system("pause");
-		/*
-		
-		for (i = 0; i < itemCount; i++){
-			
-			// This is for converting struct date into string
-			memcpy(expiration, &newExpiDate, sizeof expiration);
-			strcpy(updatedInventory[itemCount].expiDate, expiration);
-			//===============================
-			
-			//fscanf(fp1, "%5d,%[^\n]%*c,%d,%s,%.2f", &itemID, desc, &currentItemQua, currentItemExp, &currentItemPri);
-			//fscanf(fp1, "%5d %s %d %s %.2f", itemID, desc, currentItemQua, currentItemExp, currentItemPri);
-			fscanf(fp1, "%5d\",\" %s\",\" %d\",\" %s\",\" %.2f", itemID, desc, currentItemQua, currentItemExp, currentItemPri);
-			printf("\nI got this from scan");
-			printf("\nitemID \t\t%d", itemID);
-			printf("\ndesc \t\t%s", desc);
-			printf("\ncurrentItemQua \t%d", currentItemQua);
-			printf("\ncurrentItemExp \t%s", &currentItemExp);
-			printf("\ncurrentItemPri \t%.2f", currentItemPri);
-			printf("\n");
-			printf("\nHere are some inputted data\n%s\t%d\t%d\t%s\t%.2f\n", newItemDesc, newItemID, newQuantity, expiration, newPrice);
-			system("pause");
-			
-			if (itemID!=newItemID){
-				//fscanf(fp1, "%5d, %s, %d, %s, %.2f", &itemID, desc, &currentItemQua, currentItemExp, &currentItemPri);
-				fscanf(fp1, "\"%5d\", \"%s\", \"%d\", \"%s\", \"%.2f\"", itemID, &desc, currentItemQua, currentItemExp, currentItemPri);
-				strcpy(updatedInventory[updateCount].itemDesc, desc);
-				updatedInventory[updateCount].itemID = currentItemID;
-				updatedInventory[updateCount].quantity = currentItemQua;
-			
-				// This is for converting struct date into string
-				memcpy(expiration, &currentItemExp, sizeof expiration);
-				strcpy(updatedInventory[updateCount].expiDate, expiration);
-				//===============================
-				
-				updatedInventory[updateCount].price = currentItemPri;
-				
-				printf("\nI'm copying old data\n");
-				printf("%5d, %s, %d, %s, %.2f\n", updatedInventory[updateCount].itemID, updatedInventory[updateCount].itemDesc, updatedInventory[updateCount].quantity, updatedInventory[updateCount].expiDate, updatedInventory[updateCount].price);	
-				system("pause");	
-				updateCount++;
-				break;
-			}else{
-				strcpy(updatedInventory[itemCount].itemDesc, newItemDesc);
-				updatedInventory[itemCount].itemID = newItemID;
-				updatedInventory[itemCount].quantity = newQuantity;
-				
-				// This is for converting struct date into string
-				memcpy(expiration, &newExpiDate, sizeof expiration);
-				strcpy(updatedInventory[itemCount].expiDate, expiration);
-				//===============================
-				
-				updatedInventory[itemCount].price = newPrice;
-				
-				printf("\nI'm copying new data\n");
-				printf("%5d, %s, %d, %s, %.2f\n", updatedInventory[updateCount].itemID, updatedInventory[updateCount].itemDesc, updatedInventory[updateCount].quantity, updatedInventory[updateCount].expiDate, updatedInventory[updateCount].price);
-				updateCount++;
-			}
-			
-		}
-		
-		*/
-	//printf("\nHere is the updateCount: %d\n", updateCount);
-	//int i;
-	//for (i = 0; i<totalInventory;i++){
-	//	printf("\"%5d\",\"%s\",\"%d\",\"%s\",%.2f\"\n", updatedInventory[i].itemID, updatedInventory[i].itemDesc, updatedInventory[i].quantity, updatedInventory[i].expiDate, updatedInventory[i].price);
-	//	//fprintf(fp4, "%i", updateCount);		
-	//	fprintf(fp2, "\"%5d\",\"%30s\",\"%d\",\"%10s\",\"%.2f\"\n", updatedInventory[i].itemID, updatedInventory[i].itemDesc, updatedInventory[i].quantity, updatedInventory[i].expiDate, updatedInventory[i].price);
-	//}
-		
-		
-	//counter = 0;
-	//tokenCount = 0;
-	//while(fgets(line,counter,fp1)){
-	//	printf("\"%5d\",\"%s\",\"%d\",\"%s\",%.2f\"\n", updatedInventory[i].itemID, updatedInventory[i].itemDesc, updatedInventory[i].quantity, updatedInventory[i].expiDate, updatedInventory[i].price);
-	//	//fprintf(fp4, "%i", updateCount);		
-	//	fprintf(fp2, "\"%5d\",\"%s\",\"%d\",\"%s\",%.2f\"\n", updatedInventory[i].itemID, updatedInventory[i].itemDesc, updatedInventory[i].quantity, updatedInventory[i].expiDate, updatedInventory[i].price);
-	//}
-		
-		fclose(fp1);
-		fclose(fp2);
-		//remove("Database\\Inventory.csv");
-		rename("Database\\copyInventory.csv","Database\\Inventory.csv");
-		remove("Database\\counter.csv");
-		rename("Database\\control.csv","Database\\counter.csv");
-		updateSuccessful();
 	
 		
+	remove("Database\\Inventory.csv"); printf("Old Database Deleted\n");
+	rename("Database\\copyInventory.csv", "Database\\Inventory.csv"); printf("New Database Renamed\n");
+	fclose(fp1);
+	fclose(fp2);
+	system("pause");
+	
+	updateSuccessful();
+
 }
 
 
-/*
-void updateByDesc(){
-	char itemDesc[50];
-	printf("\n\nPlease Enter Item Desc: ");
-	scanf("%[^\n]s", &itemDesc);
-	if (itemDesc == ""){
-		updateInvalidInput(0);
+void testing(){
+	int ch = 999999;
+	char choice;
+	do{
+		clrscr();
+		printf("THIS IS FOR TESTING PURPOSES\n[A] Add all the items from back-up dummy data\n[B] Update Inventory Item\n[C] Display all the Items in Inventory\n[X] Main menu\n\nPlease input Choice: ");
+		scanf("%c", &choice);
+		    
+		switch(choice){
+			case 'A':case 'a':{ 
+				addAllFromBackUp(); break; }
+			case 'B':case 'b':{ 
+				updateInventoryMenu(); break; }
+			case 'C':case 'c':{					
+				clrscr(); displayAllItems(); break; }
+			case 'X':case 'x':{
+				mainMenu(); continue; break; }
+	    	default:{
+				ch = 999999; testing(); break; }
+		}
+		
 	}
-	else{
-		updateInvalidInput(0);
-	}
-	abort();
+	while (choice==999999);
 }
-*/
-
 
 void mainMenu(){
 	int ch = 999999;
 	char choice;
 	do{
-		//printf("\n");
 		clrscr();
-		printf("MAIN MENU\n[A] Add Inventory Item\n[B] Update Inventory Item\n[C] View Inventory Item\n[D] Delete Inventory Item\n[X] Exit Program\n\nPlease input Choice: ");
+		printf("MAIN MENU\n[A] Add Inventory Item\n[B] Update Inventory Item\n[C] View Inventory Item\n[D] Delete Inventory Item\n[W] Enter Testing\n[X] Exit Program\n\nPlease input Choice: ");
 		scanf("%c", &choice);
-		    switch(choice){
-				case 'A':case 'a':{ 
-					updateItem(); break; }
-				case 'B':case 'b':{ 
-					printf("Your input is %c", choice);  updateInventoryMenu(); break; }
-				case 'C':case 'c':{					
-					printf("Your input is %c", choice); clrscr(); display(); break; }
-				case 'D':case 'd':{					
-					printf("Your input is %c", choice); break; }
-				case 'X':case 'x':{
-					printf("System Terminated.");  exit(0); continue; break; }
-		    	default:{					
-					//printf("This is default."); 
-					ch = 999999; mainMenu(); break; }
-			}
-			
-			
-		    /* 
-		    clrscr();
-		    char userCommand;
-			printf("MAIN MENU\n[A] Add Inventory Item\n[B] Update Inventory Item\n[C] View Inventory Item\n[D] Delete Inventory Item\n[X] Exit Program\n\nPlease input Choice: ");
-			getchar();
-			userCommand = getchar();
-			scanf("%c", userCommand);
-			
-		    switch(userCommand)
-			{
-		    	case 'A':
-				case 'a':{
-					printf("Your input is %c", userCommand); 
-					break;
-					}
-		    	case 'B':
-				case 'b':{                                                 
-					printf("Your input is %c", userCommand); 
-					updateInventoryMenu(); break;
-					}
-		    	case 'C':
-				case 'c':{
-					printf("Your input is %c", userCommand); 
-					break;
-					}
-		    	case 'D':
-				case 'd':{
-					printf("Your input is %c", userCommand); 
-					break;
-					}
-		    	case 'X':
-				case 'x':{
-					printf("System Terminated", userCommand);
-					break;
-					}
-		    	default:
-					printf("This is default.", userCommand); 
-					break;
-			} */
+		    
+		switch(choice){
+			case 'A':case 'a':{
+				ch = 999999; mainMenu(); break; }
+			case 'B':case 'b':{
+				updateInventoryMenu(); break; }
+			case 'C':case 'c':{
+				ch = 999999; mainMenu(); break; }
+			case 'D':case 'd':{
+				ch = 999999; mainMenu(); break; }
+			case 'X':case 'x':{
+				printf("System Terminated.");  exit(0);break; }
+			case 'W':case 'w':{
+				testing(); break; }
+	    	default:{
+				ch = 999999; mainMenu(); break; }
+		}
+		
 	}
 	while (choice==999999);
 	abort();
 }
 
 int main(){
-    //
     int sysInit = 0;
-    //while(sysInit == 0){
 	FILE *fpointer = fopen("Database\\Inventory.csv", "r");
 	if(!fpointer){
 		printf("\nInventory file does not exist!");
@@ -1082,6 +801,5 @@ int main(){
 		fclose(fpointer);
 		mainMenu();
 	}
-	//}
 	return 0;    
 }
