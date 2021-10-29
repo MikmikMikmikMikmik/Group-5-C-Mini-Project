@@ -15,17 +15,19 @@ typedef struct product{
 
 void addItem() {
     product p1;
-    FILE *fp;
+    FILE *fp, *fp2;
     
     if((fp = fopen("inventory.csv","r"))!=NULL)
     {
         printf("File Exist\n");
         fp = fopen("inventory.csv", "a"); 
+        fp2 = fopen("inventoryBinary.csv", "ab"); 
     }
     else
     {
         printf("File doesnt Exist\n");
         fp = fopen("inventory.csv", "w");
+        fp2 = fopen("inventoryBinary.csv", "wb");
     }
     
     if(fp == NULL) {
@@ -51,32 +53,38 @@ void addItem() {
     printf("Enter Product Price: ");
     scanf("%f", &p1.productPrice);
 
-    printf("%f", &p1.productPrice);
-
-    /* fprintf(fp, "%d,  %s,  %d,  %s,  %f\n", p1.productID, p1.productName, p1.productQuantity, p1.productExpiration, p1.productPrice);
- */
-    fwrite(&p1, sizeof(product), 1, fp);
+    fwrite(&p1, sizeof(product), 1, fp2);
     if(fwrite!=0) {
         printf("Contents written in the file");
     }
     else {
         printf("error occured");
     }
-    fclose(fp);
+
+    fprintf(fp, "%d,  %s,  %d,  %s,  %f\n", p1.productID, p1.productName, p1.productQuantity, p1.productExpiration, p1.productPrice);
+
     
+    fclose(fp);
+    fclose(fp2);
+    
+    return;
 }
 
 void viewAllProducts(){
     product p1;
-    FILE *fp;
+    FILE *fp2;
     int j;
-    fp = fopen("inventory.csv", "r");
-    while(fread(&p1,sizeof(product),1,fp))
+    char line[200];
+    fp2 = fopen("inventoryBinary.csv", "r");
+    while(fread(&p1,sizeof(product),1,fp2))
     {
         printf("\n%-5d%-20s   %d   %s    %f", p1.productID, p1.productName, p1.productQuantity, p1.productExpiration, p1.productPrice);
     }
 
-    fclose(fp);
+    printf("\n\n");
+    system("cls");
+
+    fclose(fp2);
 }
 
 void viewInventory() {
@@ -109,7 +117,7 @@ void searchByID() {
     product p1;
     FILE *fp;
     int j, pId, found = 0;
-    fp = fopen("inventory.csv", "r");
+    fp = fopen("inventoryBinary.csv", "r");
 
     printf("SEARCH FOR AN INVENTORY ITEM > by Item ID\n\n");
     printf("Enter Product ID to Search: ");
@@ -117,7 +125,6 @@ void searchByID() {
     
     while(fread(&p1,sizeof(product),1,fp))
     {
-        printf("%d", *&(p1.productID));
         if(p1.productID == pId){
             found = 1;
             printf("\nProduct ID\tDescription\tQuantity\tExp Date\tPrice");
@@ -125,10 +132,14 @@ void searchByID() {
         }
     }
     if(!found) {
-        printf("\nRecord Not Found\n");
+        printf("\nItem ID does not exist!\n\n");
         system("pause");
         searchMenu();
     }
+
+    
+    printf("\n\n");
+    system("cls");
 
     fclose(fp);
 }
@@ -139,28 +150,31 @@ void searchByName() {
     FILE *fp;
     int j, found = 0;
     char pName[30];
-    fp = fopen("inventory.csv", "r");
+    fp = fopen("inventoryBinary.csv", "r");
 
     printf("SEARCH FOR AN INVENTORY ITEM > by Item Name\n\n");
     printf("Enter Product Name to Search: ");
     fflush(stdin);
     scanf("%[^\n]s",pName);
     
+    
+    printf("Product ID\tDescription\tQuantity\tExp Date\tPrice");
     while(fread(&p1,sizeof(product),1,fp))
     {
         printf("%s", p1.productName);
         if(strcmp(p1.productName, pName) == 0 ){
             found = 1;
-            printf("Product ID\tDescription\tQuantity\tExp Date\tPrice");
             printf("\n%-5d%-20s   %d   %s    %f", p1.productID, p1.productName, p1.productQuantity, p1.productExpiration, p1.productPrice);
         }
     }
     if(!found) {
-        printf("\nRecord Not Found\n\n");
+        printf("\nItem ID does not exist!\n\n");
         system("pause");
         searchMenu();
     }
 
+    printf("\n\n");
+    system("cls");
     fclose(fp);
 }
 
