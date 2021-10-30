@@ -26,7 +26,7 @@ int main()
 
 }
 
-void addProduct()
+void addProduct() //DUMMY CODE
 {
 	item product;
     FILE *fp;
@@ -45,7 +45,7 @@ void addProduct()
     fclose(fp);
 }
 
-void display() 
+void display() //DUMMY CODE
 {
     item product;
     FILE *fp = fopen("Inventory_ST_xx.csv","r");
@@ -64,7 +64,7 @@ void display()
     fclose(fp);           
 }
 
-void deleteItem()
+void deleteItem() //DELETE ITEM MENU
 {
     int valid = 0;
     int deleteSuccess = 0;
@@ -183,7 +183,7 @@ void deleteItem()
     }
 }
 
-void deleteChoice()
+void deleteChoice() //DELETE CHOICE MENU
 {
     char choice[20];
     while(strcmp (choice, "D") != 0 || strcmp (choice, "S")  != 0 || strcmp (choice, "M") != 0 ||
