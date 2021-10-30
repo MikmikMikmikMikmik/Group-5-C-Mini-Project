@@ -605,7 +605,7 @@ void viewInventory() {
 
 void searchByID() {
     clrscr();
-    FILE *fp = fopen("Database\\Inventory.csv","r");
+    FILE *fp = fopen("Inventory_ST.csv","r");
     int ID, z, found = 0;
     int counter = 1;
     const char s1[5] = "\",\"";
@@ -705,13 +705,13 @@ void searchByName() {
 void searchByName2() {
     clrscr();
     int found = 0;
-    FILE* stream = fopen("Database\\Inventory.csv", "r");
+    FILE* stream = fopen("Inventory_ST.csv", "r");
 
 	char line[225];
-	char delims [] = ",";
+	const char delims[5] = "\",\"";
 	char *token;
 	char *token2;
-    char pName[30];
+    char pName[100];
     printf("SEARCH FOR AN INVENTORY ITEM > by Item Name\n\n");
     printf("Enter Product Name to Search: ");
     fflush(stdin);
@@ -746,7 +746,7 @@ void searchByName2() {
 }
 
 void viewAllProducts(){
-    FILE *fp = fopen("Database\\Inventory.csv","r");
+    FILE *fp = fopen("Inventory_ST.csv","r");
     if(fp == NULL) {
         perror("Unable to open");
         exit(1);
