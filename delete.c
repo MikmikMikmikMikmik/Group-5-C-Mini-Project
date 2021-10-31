@@ -88,7 +88,7 @@ void deleteItem() //DELETE ITEM MENU
             {
                 valid = 0;
             }
-            i++;
+           
         }
         if (valid == 0)  //INVALID ID
         {
