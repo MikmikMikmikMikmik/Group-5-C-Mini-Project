@@ -7,42 +7,6 @@ void clrscr()
     system("@cls||clear");
 }
 
-typedef struct date
-{
-	int year;
-	int month;
-	int day;
-}date;
-
-typedef struct item1{
-	unsigned int itemID;
-	char itemDesc[10];
-	unsigned short quantity;
-	char expiDate[10];
-	float price;
-}item1;
-
-typedef struct item2{
-	unsigned int itemID;
-	char itemDesc[10];
-	unsigned short quantity;
-	struct expiDate{
-		unsigned char year;
-		unsigned char month;
-		unsigned char day;
-	}expiDate[3];
-	float price;
-}item2;
-
-typedef struct item
-{
-	int itemID;
-	char itemDesc[20];
-	int quantity;
-	date expiration;
-	float price;
-}item;
-
 void viewInventory();
 void searchMenu();
 void searchItemID();
@@ -85,7 +49,7 @@ void searchItemID() {
     printf("Enter Product ID to Search: ");
     scanf(" %d", &ID);
 	
-	printf("Product ID\tDescription\t\tQuantity\tExp Date\tPrice\n");
+	printf("\n\tProduct ID\t\tDescription\t\tQuantity\tExp Date\tPrice\n\n");
     if ((ID<=0) || (ID>=100000)) {
         printf("\nError! Invalid Input\n");
         system("pause");
@@ -100,7 +64,7 @@ void searchItemID() {
 			if(ID == prodID) {
 				while(token!=NULL) {
 					found = 1;
-					printf("%-10s\t", token);
+					printf("\t%-10s", token);
 					token = strtok(NULL,delims);
 				}
 			}
@@ -121,7 +85,7 @@ void searchItemID() {
 void searchItemName() {
     clrscr();
     int found = 0;
-    FILE* stream = fopen("inventory.csv", "r");
+    FILE* stream = fopen("Inventory_ST_NoBOM.csv", "r");
 
 	char line[225];
 	const char delims[5] = "\",\"";
@@ -133,7 +97,7 @@ void searchItemName() {
     fflush(stdin);
     scanf("%[^\n]s",pName);
 
-	printf("Product ID\tDescription\t\tQuantity\tExp Date\tPrice\n");
+	printf("\n\tProduct ID\t\tDescription\t\tQuantity\tExp Date\tPrice\n\n");
 	while(fgets(line,sizeof(line),stream)){
 		char lineMemory[225]; strcpy(lineMemory, line);
 		token = strtok(line, delims);
@@ -143,7 +107,7 @@ void searchItemName() {
 			token2 = strtok(lineMemory, delims);
 			while(token2!=NULL) {
 				found = 1;
-				printf("%-10s\t", token2);
+				printf("\t%-10s", token2);
 				token2 = strtok(NULL, delims);
 			}
 		}
@@ -210,33 +174,4 @@ void searchMenu() {
         system("pause");
         searchMenu();
     }
-}
-
-
-int main(){
-    char choice;
-
-    printf("Inventory\n");
-    printf("[A] Add Item to Inventory\n");
-    printf("[B] Update Item to Inventory\n");
-    printf("[C] View Item to Inventory\n");
-    printf("[D] Delete Item to Inventory\n");
-    printf("Choice: ");
-    scanf("%c", &choice);
-
-    printf("%c", &choice);
-    if(choice == 'A') {
-       
-    }
-    else if(choice == 'B') {
-        
-    }
-    else if(choice == 'C') {
-        viewInventory();
-    }
-    else if(choice == 'D') {
-        
-    }
-
-	return 0;    
 }
