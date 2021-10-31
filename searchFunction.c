@@ -15,16 +15,24 @@ void searchItemID() {
     clrscr();
     FILE *fp = fopen("Inventory_ST_NoBOM.csv","r");
 
-    int ID, prodID, found = 0;
+    int prodID, found = 0;
 	char line[225];
     const char delims[5] = "\",\"";
+
+    char stringID[6];
+    int ID;
     
     printf("SEARCH FOR AN INVENTORY ITEM > by Item ID\n\n");
     printf("Enter Product ID to Search: ");
-    scanf(" %d", &ID);
-	
+    fflush(stdin);
+    scanf("%[^\n]s", stringID);
+
+    printf("%d", strlen(stringID));
+    ID = atoi(stringID);
+    printf("%d", ID);
+    
 	printf("\n\tProduct ID\t\tDescription\t\tQuantity\tExp Date\tPrice\n\n");
-    if ((ID<=0) || (ID>=100000)) {
+    if ((ID<=0) || (ID>=100000) || strlen(stringID) > 5) {
         printf("\nError! Invalid Input\n");
         system("pause");
         searchMenu();
@@ -122,11 +130,17 @@ void searchMenu() {
         searchItemName();
     }
     else if(strcmp(choice, "C") == 0 || strcmp(choice, "c") == 0 ) {
-        viewInventory();
+        
     }
     else {
         printf("\n\nError! Invalid Input\n\n");
         system("pause");
         searchMenu();
     }
+}
+
+int main()
+{
+    searchMenu();
+    return 0;
 }

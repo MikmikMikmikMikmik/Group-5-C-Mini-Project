@@ -491,16 +491,22 @@ void searchItemID() {
     clrscr();
     FILE *fp = fopen("Inventory.csv","r");
 
-    int ID, prodID, found = 0;
+    int prodID, found = 0;
 	char line[225];
     const char delims[5] = "\",\"";
+
+    char stringID[6];
+    int ID;
     
     printf("SEARCH FOR AN INVENTORY ITEM > by Item ID\n\n");
     printf("Enter Product ID to Search: ");
-    scanf(" %d", &ID);
+    fflush(stdin);
+    scanf("%[^\n]s", stringID);
+
+    ID = atoi(stringID);
 	
 	printf("\n\tProduct ID\t\tDescription\t\tQuantity\tExp Date\tPrice\n\n");
-    if ((ID<=0) || (ID>=100000)) {
+    if ((ID<=0) || (ID>=100000) || strlen(stringID) > 5) {
         printf("\nError! Invalid Input\n");
         system("pause");
         searchMenu();
