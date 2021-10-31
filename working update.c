@@ -81,25 +81,22 @@ void updateInventoryMenu(){
 			break;
 		}
 	}
-	abort();
+	//abort();
 
 }
 
 void updateAgain(){
-	char ch = '\0';
+	char ch;
 	printf("Do you want to try updating an item again?\n[Y] Yes\n[N] No\n\nPlease input choice: ");
-	getchar();
-	scanf("%c",&ch);
+	//ch = getchar();
+	scanf("%c", &ch);
 	if(ch=='y'|| ch=='Y'){
 		updateInventoryMenu();
-		abort();
 	}
 	else{
 		mainMenu();
-		abort();
+		//abort();    
 	}
-	abort();
-	
 }
 
 void updateInvalidInput(int invType){
@@ -118,28 +115,23 @@ void updateInvalidInput(int invType){
 			clrscr();
 			printf("MAIN MENU > UPDATE INVENTORY ITEM\n\nProduct ID currently in use! Item NOT updated!\n\n");
 			updateAgain();
-			abort();
 			break;
 		}
 		case 2:{		
 			clrscr();
 			printf("MAIN MENU > UPDATE INVENTORY ITEM\n\nNo Items Matched.\n\n");
-			updateAgain();
-			abort();
 			break;
 		}
 		case 3:{		
 			clrscr();
 			printf("MAIN MENU > UPDATE INVENTORY ITEM\n\nUpdate cancelled! Item NOT updated!\n\n");
 			updateAgain();
-			abort();
 			break;
 		}
 		default:{		
 			clrscr();
 			printf("MAIN MENU > UPDATE INVENTORY ITEM\n\nInvalid Input\n\n");
 			updateAgain();
-			abort();
 			break;
 		}
 	}
@@ -151,7 +143,7 @@ void updateSuccessful(){
 	clrscr();
 	printf("MAIN MENU > UPDATE INVENTORY ITEM\n\nUpdate Successful!\n\n");
 	updateAgain();
-	abort();
+	//abort();
 }
 
 void addAllFromBackUp(){
@@ -265,7 +257,7 @@ void displayAllItems(){
     system("pause");
     clrscr();
     mainMenu();
-	abort();
+	//abort();
 }
 
 int indexOfSubString(char str[], char s[]){
@@ -309,7 +301,7 @@ void updateSelectedID(int ID){
 				ID = '\0';
 	    		fclose(fp);
 				updateProcess(z);
-				abort();
+				//abort();
 			}
 			token = strtok(NULL, s1);
 			break;
@@ -320,7 +312,7 @@ void updateSelectedID(int ID){
 	    fclose(fp);
 		updateInvalidInput(0);
 		updateAgain();
-		abort();
+		//abort();
 	}
 }
 
@@ -343,7 +335,7 @@ int updateSearch(int searchChoice){
 			if ((ID<=0) || (ID>=100000)){
 				updateInvalidInput(0);
 				updateAgain();
-				abort();
+				//abort();
 			}
 			else{
 				updateSelectedID(ID);
@@ -358,26 +350,8 @@ int updateSearch(int searchChoice){
 			
 			printf("\n\nPlease Enter Item Desc:\t\t");
 			scanf(" %[^\n]%*c", itemDesc);
-			fgets(itemDesc, sizeof itemDesc, stdin);
 			
-			int j;
-			for(j = 0; sizeof itemDesc[j] != '\0'; j++){
-				if (!(itemDesc[j]>='a' && itemDesc[j]<='z' || itemDesc[j]>='A' && itemDesc[j]<='Z')){
-					if(((itemDesc[j] == '.') || (itemDesc[j] == '/') || (itemDesc[j] == '-')) != NULL){
-						if ((itemDesc[j] >='0' && itemDesc[j] <='9')){
-							printf("\n\nThis is a good String\t\t");
-							break;
-						}
-					printf("\n\nThis is a good String\t\t");
-					break;
-					}
-					printf("\n\nThis is a good String\t\t");
-					break;
-				}
-				else{
-					updateInvalidInput(0);
-				}
-			}
+			
 			//Problem here ==========================================
 			
 			system("pause");
@@ -439,7 +413,7 @@ int updateSearch(int searchChoice){
 			if ((ID<=0) || (ID>=100000)){
 				updateInvalidInput(0);
 				updateAgain();
-				abort();
+				//abort();
 			}
 			else{
 				updateSelectedID(ID);
@@ -577,51 +551,90 @@ int updateProcess(int ID){
 	
 	printf("\nEnter new Item ID:\t\t");
 	scanf("%d",&newItemID);
-	if (!(isdigit(&newItemID))){
+	if ((newItemID<=0) || (newItemID>=100000)){
 		updateInvalidInput(9); //default
 	}
 	else if(updateCheckItemID(tempID, newItemID) == 2){
 		updateInvalidInput(1); //itemID already taken
-		abort();
+		//abort();
 	}
+	//alternative way of catching characters on a string
+	/*
+	for(j = 0; newItemID[j] != '\0'; j++){
+		//check if string is not a digit
+		if (!(
+		
+		(itemDesc[j] <= 47 && itemDesc[j] >= 58) || 
+		
+			printf("\n\nThis is a good String\t\t");
+			break;
+		}
+	}
+	*/
 	
 	printf("\nEnter new Description:\t\t");
 	scanf(" %[^\n]s", newItemDesc);
+	
 	printf("\nEnter new Quantity:\t\t");
-	scanf("%",&newQuantity);
-	if (newPrice == '-') {
-		strcpy(expiration, "-");
-	}else if(!(isdigit(&newQuantity))){
-		updateInvalidInput(0);
-	}
-	else{
+	scanf("%d",&newQuantity);
+	if (isdigit(&newQuantity)){
 		updateInvalidInput(0);
 	}
 	
-	printf("\nEnter New Expiration Date: (yyyy/mm/dd)\t\t");
+	printf("\nEnter New Expiration Date: (yyyy-mm-dd)\t\t");
 	int year, month, day;
-	scanf("%s/%s/%s",&year,&month,&day);
-	if ((year >='0' && year <='9') || (month >='0' && month <='9') || (day >='0' && day <='9')){
+	scanf("%d-%d-%d",&year, &month, &day); 
+	if (year == '-') {
+		strcpy(expiration, "-");
+	}
+	
+	/*
+	if (isdigit(&year))        {
+		strcpy(expiration, "-");
+	} else if (isdigit(&month)){
+		strcpy(expiration, "-");
+	} else if (isdigit(&day))  {
+		strcpy(expiration, "-");
+	} else {
 		updateCheckingDate(year, month, day);
 	}
-	else if (year == '-') {
-		strcpy(expiration, "-");
-	}
-	else{
-		updateInvalidInput(0);
-	}
 	
+	
+	/*printf("\nEnter New Expiration Date: (yyyy/mm/dd)\t\t");
+	int year, month, day;
+	scanf("%d/%d/%d",&year,&month,&day); 
+	if (isdigit(&year))        {
+		strcpy(expiration, "-");
+	} else if (isdigit(&month)){
+		strcpy(expiration, "-");
+	} else if (isdigit(&day))  {
+		strcpy(expiration, "-");
+	} else if ((year >= 0 && year <=9999) || 
+	           (month >= 0 && month <= 12) || 
+			   (day >= 0 && day <= 31)){
+		updateCheckingDate(year, month, day);
+	}
+					/*
+					
+					if (isdigit(&year)){
+						updateInvalidInput(0);
+					}else if (isdigit(&month)){
+						updateInvalidInput(0);
+					}else if (isdigit(&day)){
+						updateInvalidInput(0);
+					} 
+					else if (year == '-') {
+						strcpy(expiration, "-");
+					}
+					//else if (!(isdigit(&year)) && !(isdigit(&month)) && !(isdigit(&day))) { strcpy(expiration, "-"); }
+					*/
+					
 	printf("\nEnter new price:\t\t");
-	scanf("%s",&newPrice);
-	if (newPrice == '-') {
-		strcpy(expiration, "-");
-	} else if (isdigit(&newPrice)){
+	scanf("%d",&newPrice);
+	if (isdigit(&newPrice)){
 		updateInvalidInput(0);
-	}
-	else{
-		updateInvalidInput(0);
-	}
-	
+	} 
+	//else if (newPrice == '-') { strcpy(expiration, "-"); }
 	
 	//===============================================
 	
@@ -685,13 +698,14 @@ int updateProcess(int ID){
 	
 	printf("\n\nUpdated Product Details:\nProduct ID\tDescription\t\tQuantity\tExp Date\tPrice\n%-10d\t%-10s\t%-10d\t%-10s\t%-10.2f\n", newItemID, newItemDesc, newQuantity, expiration, newPrice);
 	
-	char ch;
 	printf("\nProceed with update?\n[Y] Yes\n[N] No\n\nPlease input choice: ");
-	getchar();
-	scanf("%c",&ch);
+	char ch;
+	ch = getchar();
+	scanf("%c", &ch);
+	printf("I\'m right below the ch variable");
 	if(!(ch=='y'|| ch=='Y')){
 		updateInvalidInput(3);
-		abort();
+		//abort();
 	}
 		
 	int x, i;
@@ -705,17 +719,21 @@ int updateProcess(int ID){
 	tokenCount = 5;
 	
 	while(fgets(line,sizeof(line),fp1)){
+		printf("\nI\'m here inside the loop");
 		char *token;
 		token = strtok(line, s1);
 		z = atoi(token);
 		while (token != NULL){
+			printf("\nI\'ve entered another loop");
 			if (z == newItemID){
+				printf("\nI\'ve entered z==newItem statement");
 				int j;
 				for (j = 0; j < 5; j++){
+					printf("\nI\'m in a for loop");
 					token = strtok(NULL, s1);
 				}
-				fprintf(fp2, "\"%d\",\"%s\",\"%d\",\"%s\",\"%.2f\"\n", newItemID, newItemDesc, newQuantity, expiration, newPrice);
-				break;
+				fprintf(fp2, "\"%d\",\"%s\",\"%d\",\"%s\",\"%.2f\"\n", newItemID, &newItemDesc, newQuantity, &expiration, newPrice);
+				printf("\nI\'m printing the new data: \n", newItemID, newItemDesc, newQuantity, expiration, newPrice);
 			}
 			else{
 				if(tokenCount != 0){
@@ -739,11 +757,11 @@ int updateProcess(int ID){
 		}
 	}
 	
+	fclose(fp1);
+	fclose(fp2);
 		
 	remove("Database\\Inventory.csv"); printf("Old Database Deleted\n");
 	rename("Database\\copyInventory.csv", "Database\\Inventory.csv"); printf("New Database Renamed\n");
-	fclose(fp1);
-	fclose(fp2);
 	system("pause");
 	
 	updateSuccessful();
@@ -803,7 +821,7 @@ void mainMenu(){
 		
 	}
 	while (choice==999999);
-	abort();
+	//abort();
 }
 
 int main(){

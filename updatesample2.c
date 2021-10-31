@@ -384,7 +384,7 @@ int updateCheckItemID(int ID, int newID){
 					//printf("%-10s\t", token);
 					switch(tokenCount){
 						case 0: {
-							existingID_itemID = token;
+							//existingID_itemID = token;
 							printf("%-10d\t", existingID_itemID);
 							break;
 						}
@@ -395,7 +395,7 @@ int updateCheckItemID(int ID, int newID){
 							break;
 						}
 						case 2:{
-							existingID_quantity = token;
+							//existingID_quantity = token;
 							printf("%-10d\t", existingID_quantity);
 							break;
 						}
@@ -529,7 +529,7 @@ int updateByID(int ID){
 					//printf("%-10s\t", token);
 					switch(tokenCount){
 						case 0: {
-							itemOnHold_itemID = token;
+							//itemOnHold_itemID = token;
 							printf("%-10d\t", itemOnHold_itemID);
 							break;
 						}
@@ -540,7 +540,7 @@ int updateByID(int ID){
 							break;
 						}
 						case 2:{
-							itemOnHold_quantity = token;
+							//itemOnHold_quantity = token;
 							printf("%-10d\t", itemOnHold_quantity);
 							break;
 						}

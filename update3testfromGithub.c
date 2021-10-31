@@ -86,7 +86,7 @@ void updateInventoryMenu(){
 }
 
 void updateAgain(){
-	char ch = '\0';
+	char ch;
 	printf("Do you want to try updating an item again?\n[Y] Yes\n[N] No\n\nPlease input choice: ");
 	getchar();
 	scanf("%c",&ch);
@@ -234,8 +234,7 @@ char* updateCheckingDate(int day,int month,int year)
 		printf("\nInvalid date\nPlease enter details again");
 		updateInvalidInput(0);
 	}
-	char *inputDate = "";
-	inputDate = "%d/%d/%d", year, month, day;
+	char inputDate = ("%d/%d/%d", year, month, day);
 	char *otherString = inputDate;
 	return otherString;
 }
@@ -360,25 +359,24 @@ int updateSearch(int searchChoice){
 			scanf(" %[^\n]%*c", itemDesc);
 			fgets(itemDesc, sizeof itemDesc, stdin);
 			
+			
+			
 			int j;
-			for(j = 0; sizeof itemDesc[j] != '\0'; j++){
+			for(j = 0; itemDesc[j] != '\0'; j++){
 				if (!(itemDesc[j]>='a' && itemDesc[j]<='z' || itemDesc[j]>='A' && itemDesc[j]<='Z')){
-					if(((itemDesc[j] == '.') || (itemDesc[j] == '/') || (itemDesc[j] == '-')) != NULL){
-						if ((itemDesc[j] >='0' && itemDesc[j] <='9')){
+					if(!((itemDesc[j] == '.') || (itemDesc[j] == '/') || (itemDesc[j] == '-')) != NULL){
+						if (!(itemDesc[j] >='0' && itemDesc[j] <='9')){
 							printf("\n\nThis is a good String\t\t");
 							break;
 						}
-					printf("\n\nThis is a good String\t\t");
-					break;
 					}
-					printf("\n\nThis is a good String\t\t");
-					break;
 				}
 				else{
 					updateInvalidInput(0);
 				}
 			}
 			//Problem here ==========================================
+			
 			
 			system("pause");
 			clrscr();
@@ -577,51 +575,37 @@ int updateProcess(int ID){
 	
 	printf("\nEnter new Item ID:\t\t");
 	scanf("%d",&newItemID);
-	if (!(isdigit(&newItemID))){
-		updateInvalidInput(9); //default
+	if (isdigit(&newItemID)){
+			updateInvalidInput(9); //itemID already taken
 	}
 	else if(updateCheckItemID(tempID, newItemID) == 2){
-		updateInvalidInput(1); //itemID already taken
-		abort();
+			updateInvalidInput(1); //itemID already taken
+			abort();
 	}
 	
 	printf("\nEnter new Description:\t\t");
 	scanf(" %[^\n]s", newItemDesc);
 	printf("\nEnter new Quantity:\t\t");
-	scanf("%",&newQuantity);
-	if (newPrice == '-') {
-		strcpy(expiration, "-");
-	}else if(!(isdigit(&newQuantity))){
-		updateInvalidInput(0);
-	}
-	else{
+	scanf("%d",&newQuantity);
+	if (isdigit(&newQuantity)){
 		updateInvalidInput(0);
 	}
 	
-	printf("\nEnter New Expiration Date: (yyyy/mm/dd)\t\t");
+	printf("\nEnter new Expiration Date: (yyyy/mm/dd)\t\t");
 	int year, month, day;
-	scanf("%s/%s/%s",&year,&month,&day);
-	if ((year >='0' && year <='9') || (month >='0' && month <='9') || (day >='0' && day <='9')){
+	scanf("%d-%d-%d",&year,&month,&day);
+	if ((year && month && day)  != NULL){
 		updateCheckingDate(year, month, day);
 	}
-	else if (year == '-') {
-		strcpy(expiration, "-");
-	}
 	else{
-		updateInvalidInput(0);
+		strcpy(expiration, "-");
 	}
 	
 	printf("\nEnter new price:\t\t");
-	scanf("%s",&newPrice);
-	if (newPrice == '-') {
-		strcpy(expiration, "-");
-	} else if (isdigit(&newPrice)){
+	scanf("%f",&newPrice);
+	if (isdigit(&newQuantity)){
 		updateInvalidInput(0);
 	}
-	else{
-		updateInvalidInput(0);
-	}
-	
 	
 	//===============================================
 	
