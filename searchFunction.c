@@ -43,14 +43,12 @@ typedef struct item
 	float price;
 }item;
 
-//RAVEN
 void viewInventory();
 void searchMenu();
 void searchItemID();
 void searchItemName();
 void viewAllProducts();
 
-//RAVEN
 void viewInventory() {
     clrscr();
     char choice;
@@ -123,7 +121,7 @@ void searchItemID() {
 void searchItemName() {
     clrscr();
     int found = 0;
-    FILE* stream = fopen("Inventory_ST_NoBOM.csv", "r");
+    FILE* stream = fopen("inventory.csv", "r");
 
 	char line[225];
 	const char delims[5] = "\",\"";
