@@ -44,7 +44,7 @@ void searchItemID() {
 			}
 		}
 		if (found == 0){
-			printf("\nItem ID does not exist.\n\n");
+			printf("\nItem ID does not exists.\n\n");
 			fclose(fp);
 			system("pause");
 			searchMenu();
@@ -88,7 +88,7 @@ void searchItemName() {
 	}
 	
 	if(!found) {
-        printf("\nRecord Not Found\n\n");
+        printf("\nItem Name does not exists.\n\n");
         system("pause");
         searchMenu();
     }
