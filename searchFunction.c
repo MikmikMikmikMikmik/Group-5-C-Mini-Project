@@ -7,35 +7,9 @@ void clrscr()
     system("@cls||clear");
 }
 
-void viewInventory();
 void searchMenu();
 void searchItemID();
 void searchItemName();
-void viewAllProducts();
-
-void viewInventory() {
-    clrscr();
-    char choice;
-    printf("VIEW INVENTORY\n");
-    printf("[A] View All\n");
-    printf("[B] Search for an Inventory Item\n");
-    printf("[C] Back to Menu\n");
-    printf("Choice: ");
-    
-    fflush(stdin);
-    scanf("%c", &choice);
-
-    printf("%c", &choice);
-    if(choice == 'A') {
-       viewAllProducts();
-    }
-    else if(choice == 'B') {
-        searchMenu();
-    }   
-    else if(choice == 'C')   {
-        
-    }
-}
 
 void searchItemID() {
     clrscr();
@@ -123,25 +97,6 @@ void searchItemName() {
     system("pause");
     searchMenu();
     fclose(stream);
-}
-
-void viewAllProducts(){
-    FILE *fp = fopen("Inventory_ST.csv","r");
-    if(fp == NULL) {
-        perror("Unable to open");
-        exit(1);
-    }
-    char line[200];
-    while(fgets(line,sizeof(line),fp)) {
-        char *token;
-        token = strtok(line, ",");
-
-        while(token!=NULL){
-            printf("%-12s", token);
-            token = strtok(NULL, ",");
-        }
-        printf("\n");
-    }
 }
 
 void searchMenu() {
