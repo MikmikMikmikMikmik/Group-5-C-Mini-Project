@@ -78,7 +78,6 @@ int main()
 
 
 void mainMenu(){
-	clrscr();
     int sysInit = 0;
     char userCommand[50];
 	printf("MAIN MENU\n[A] Add Inventory Item\n[B] Update Inventory Item\n[C] View Inventory Item\n[D] Delete Inventory Item\n[X] Exit Program\n\n");
@@ -157,7 +156,6 @@ void mainMenu(){
 
 int addProduct()
 {
-	clrscr();
     printf("\nADD ITEM MENU\n");
     char again[50];
 	char confirm[50];
@@ -206,7 +204,7 @@ int addProduct()
 	    scanf(" %s", &checkQuant);
         for(int i=0; i < strlen(checkQuant); i++)
         {
-            if(isalpha(checkQuant[i]))//CHECKING IF MAY LETRA SA Quantity
+            if(isalpha(checkQuant[i]) || atoi(checkQuant) <=0)//CHECKING IF MAY LETRA SA Quantity and less than zero
             {
                  passQuant = 0;
             }
@@ -223,7 +221,7 @@ int addProduct()
     while (passExp != 1)
     {
         product.expdate.year = 0;
-        printf("\nProduct Exp Date (YEAR-MONTH-DAY):	  ");
+        printf("\nProduct Exp Date (YYYY-MM-DD):	  ");
 	    scanf(" %d-%d-%d",&product.expdate.year, &product.expdate.month, &product.expdate.day);
         //printf("\n%d\n%d\n%d",product.expdate.day, product.expdate.month, product.expdate.year);
         passExp = 1;
@@ -285,7 +283,7 @@ int addProduct()
 	    scanf(" %s", &checkPrice);
         for(int i=0; i < strlen(checkPrice); i++)
         {
-            if(isalpha(checkPrice[i]))//CHECKING IF MAY LETRA SA PRICE
+            if(isalpha(checkPrice[i]) || atoi(checkPrice) <= 0)//CHECKING IF MAY LETRA SA PRICE AND CHECK IF LESS THAN ZERO
             {
                  passPrice = 0;
             }
@@ -1151,7 +1149,6 @@ void deleteItem() //DELETE ITEM MENU
 
 void deleteChoice() //DELETE CHOICE MENU
 {
-	clrscr();
     char choice[20];
     while(strcmp (choice, "D") != 0 || strcmp (choice, "S")  != 0 || strcmp (choice, "M") != 0 ||
     strcmp (choice, "d") != 0 || strcmp (choice, "s")  != 0 || strcmp (choice, "M") != 0){
