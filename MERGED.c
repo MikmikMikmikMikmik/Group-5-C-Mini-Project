@@ -30,6 +30,12 @@ void deleteItem();
 void deleteChoice();
 void deleteMenu();
 
+void viewMenu();
+void sortOption();
+void idsortascend();
+void idsortdescend();
+void postsortScreen();
+
 void searchMenu();
 void searchItemID();
 void searchItemName();
@@ -81,8 +87,7 @@ void mainMenu(){
 	    	case 'C':
 			case 'c':{
 				printf("Your input is %c", userCommand);
-                //pa try lng lods mark, lagay mo nlng function mo d2
-                searchMenu();
+                viewMenu();
 				sysInit = 1;
 	    		break;}
 	    	case 'D':
@@ -584,10 +589,10 @@ void searchItemName() {
 void searchMenu() {
     clrscr();
     char choice[2];
-    printf("SEARCH FOR AN INVENTORY ITEM\n");
-    printf("[A] SEARCH BY PRODUCT ID\n");
-    printf("[B] SEARCH BY PRODUCT NAME/DESCRIPTION\n");
-    printf("[C] BACK TO VIEW INVENTORY MENU\n");
+    printf("Search for an Inventory Item\n");
+    printf("[A] Search by Product ID\n");
+    printf("[B] Search by Product Descrption\n");
+    printf("[C] Back to View Inventory Menu\n");
     printf("\nPlease input choice: ");
     fflush(stdin);
     scanf("%s", choice);
@@ -604,11 +609,354 @@ void searchMenu() {
         searchItemName();
     }
     else if(strcmp(choice, "C") == 0 || strcmp(choice, "c") == 0 ) {
-        //function ni mark
+        viewMenu();
     }
     else {
         printf("\n\nError! Invalid Input\n\n");
         system("pause");
         searchMenu();
     }
+}
+
+/////////////////////////////////////// VIEW PART ///////////////////////////////////////////////////
+
+void viewMenu()
+{
+	clrscr();
+	char choice;
+	printf("View Inventory Item\n");
+	printf("\n[A] View All Inventory Items\n");
+	printf("[B] Search for an Inventory Item\n");
+	printf("[C] Return to Main Menu\n");
+	printf("\n Please input valid choice: ");
+	scanf(" %c", &choice);
+	if(choice == 'A')
+	{
+		sortOption();
+	}
+	else if(choice == 'B')
+	{
+		searchMenu();
+	}
+	else if(choice == 'C')
+	{
+		clrscr();
+		mainMenu();
+	}
+	else
+	{
+		printf("\n\nError! Invalid Input\n\n");
+        system("pause");
+        viewMenu();
+	}
+}
+
+void sortOption()
+{
+	clrscr();
+	char choice1;
+	printf("View All\n");
+	printf("\n[A] Sort Product ID in Ascending Order\n");
+	printf("[B] Sort Product ID in Descending Order\n");
+	printf("[C] Return to Main Menu\n");
+	printf("\nPlease input valid choice: ");
+	scanf(" %c", &choice1);
+	if(choice1 == 'A')
+	{
+		idsortascend();
+	}
+	else if(choice1 == 'B')
+	{
+		idsortdescend();
+	}
+	else if(choice1 == 'C')
+	{
+		clrscr();
+		mainMenu();
+	}
+	else 
+	{
+		printf("\n\nError! Invalid Input\n\n");
+        system("pause");
+        sortOption();
+	}
+
+}
+
+void idsortascend()
+{
+	typedef struct item
+{
+	int productID;
+	char productDescription[30];
+	int quantity;
+	char expiration[30];
+	float price;
+}item;
+ 			FILE *fp;
+            
+            fp = fopen("inventory.csv","r");
+            char buff[500];
+            int row_count = 0;
+            int field_count = 0;
+            item products[999];
+            int i = 0;
+            char complete[500][100];
+            
+            while(fgets(buff, sizeof(buff),fp))
+            {
+                
+                int field_count = 0;
+                row_count++;
+                
+                strcpy(complete[i], buff);
+                
+                
+                char *field = strtok(buff,",");
+
+                while (field)
+                {
+                    if (field_count == 0) // ID
+                    {
+                        
+                        char *result = field+1;
+                        result[strlen(result)-1] = '\0'; 
+                        int realResult = atoi(result); 
+                        products[i].productID = realResult;
+                       
+                    }
+                    if (field_count == 1)
+                    {
+                        char *result = field+1;
+                        result[strlen(result)-1] = '\0';
+                        strcpy(products[i].productDescription, result);
+                    }
+                    if (field_count == 2) 
+                    {
+                        char *result = field+1;
+                        result[strlen(result)-1] = '\0';
+                        int quant = atoi(result);
+                       products[i].quantity = quant; 
+                    }
+                    if (field_count == 3)
+                    {
+                        strcpy(products[i].expiration, field);
+                    }
+                    if (field_count == 4) 
+                    {
+                        
+                        char *result = field+1;
+                        result[strlen(result)-1] = '\0';
+                        float thePrice = strtod(result,NULL);
+                        
+                       products[i].price = thePrice; 
+                        
+                    }
+                    field = strtok(NULL, ",");
+                    field_count++;
+                }
+                i++;
+            }
+            fclose(fp);
+
+            
+            int idTmp;
+            char descTmp[50];
+            int quantTmp;
+            char expTmp[50];
+            float priceTmp;
+            
+            
+            for(int x=0;x<sizeof(buff);x++)
+            {
+                    for(int y=x+1;y<sizeof(buff);y++)
+                        {
+                            
+                            if(products[y].productID < products[x].productID && products[x].productID != 0)
+                                {
+                                    idTmp = products[x].productID;
+                                    products[x].productID = products[y].productID;
+                                    products[y].productID = idTmp;
+
+                                    strcpy(descTmp ,products[x].productDescription);
+                                    strcpy(products[x].productDescription, products[y].productDescription);
+                                    strcpy(products[y].productDescription, descTmp);
+
+                                    quantTmp = products[x].quantity;
+                                    products[x].quantity = products[y].quantity;
+                                    products[y].quantity = quantTmp;
+
+                                    strcpy(expTmp ,products[x].expiration);
+                                    strcpy(products[x].expiration, products[y].expiration);
+                                    strcpy(products[y].expiration, expTmp);
+
+                                    priceTmp = products[x].price;
+                                    products[x].price = products[y].price;
+                                    products[y].price = priceTmp;
+                                    
+                                }
+                        }
+                        
+          }
+            
+            
+            
+            for(int x=0;x<sizeof(buff);x++)
+            {
+                printf("\n \"%d\"   %s   \"%d\"   %s   \"%.2f\"",products[x].productID,products[x].productDescription,
+                products[x].quantity,products[x].expiration,products[x].price);
+            }  
+         		postsortScreen();
+            
+}
+
+void idsortdescend()
+{
+	typedef struct item
+{
+	int productID;
+	char productDescription[30];
+	int quantity;
+	char expiration[30];
+	float price;
+}item;
+ 			FILE *fp;
+            fp = fopen("inventory.csv","r");
+            char buff[500];
+            int row_count = 0;
+            int field_count = 0;
+            item products[999];
+            int i = 0;
+            char complete[500][100];
+            
+            while(fgets(buff, sizeof(buff),fp))
+            {
+                
+                int field_count = 0;
+                row_count++;
+                
+                strcpy(complete[i], buff);
+                
+                
+                char *field = strtok(buff,",");
+
+                while (field)
+                {
+                    if (field_count == 0) // ID
+                    {
+                        
+                        char *result = field+1;
+                        result[strlen(result)-1] = '\0'; 
+                        int realResult = atoi(result); 
+                        products[i].productID = realResult;
+                       
+                    }
+                    if (field_count == 1)
+                    {
+                        char *result = field+1;
+                        result[strlen(result)-1] = '\0';
+                        strcpy(products[i].productDescription, result);
+                    }
+                    if (field_count == 2) 
+                    {
+                        char *result = field+1;
+                        result[strlen(result)-1] = '\0';
+                        int quant = atoi(result);
+                       products[i].quantity = quant; 
+                    }
+                    if (field_count == 3)
+                    {
+                        strcpy(products[i].expiration, field);
+                    }
+                    if (field_count == 4) 
+                    {
+                        
+                        char *result = field+1;
+                        result[strlen(result)-1] = '\0';
+                        float thePrice = strtod(result,NULL);
+                        
+                       products[i].price = thePrice; 
+                        
+                    }
+                    field = strtok(NULL, ",");
+                    field_count++;
+                }
+                i++;
+            }
+            fclose(fp);
+
+            
+            int idTmp;
+            char descTmp[50];
+            int quantTmp;
+            char expTmp[50];
+            float priceTmp;
+            
+            
+            for(int x=0;x<sizeof(buff);x++)
+            {
+                    for(int y=x+1;y<sizeof(buff);y++)
+                        {
+                            
+                            if(products[y].productID > products[x].productID && products[x].productID != 0)
+                                {
+                                    idTmp = products[x].productID;
+                                    products[x].productID = products[y].productID;
+                                    products[y].productID = idTmp;
+
+                                    strcpy(descTmp ,products[x].productDescription);
+                                    strcpy(products[x].productDescription, products[y].productDescription);
+                                    strcpy(products[y].productDescription, descTmp);
+
+                                    quantTmp = products[x].quantity;
+                                    products[x].quantity = products[y].quantity;
+                                    products[y].quantity = quantTmp;
+
+                                    strcpy(expTmp ,products[x].expiration);
+                                    strcpy(products[x].expiration, products[y].expiration);
+                                    strcpy(products[y].expiration, expTmp);
+
+                                    priceTmp = products[x].price;
+                                    products[x].price = products[y].price;
+                                    products[y].price = priceTmp;
+                                    
+                                }
+                        }
+                        
+          }
+            
+            
+            
+            for(int x=0;x<sizeof(buff);x++)
+            {
+                printf("\n \"%d\"   %s   \"%d\"   %s   \"%.2f\"",products[x].productID,products[x].productDescription,
+                products[x].quantity,products[x].expiration,products[x].price);
+            }  
+			postsortScreen();
+}
+
+void postsortScreen()
+{
+			char choice1;
+	    	printf("\n\n[A] Return to Main Menu\n");
+            printf("[B] Return to View Menu\n");
+            printf("Please input valid choice: ");
+            scanf(" %c", &choice1);
+            if(choice1 == 'A')
+            {
+            	clrscr();
+            	mainMenu();
+			}
+			else if(choice1 == 'B')
+			{
+				clrscr();
+				viewMenu();
+			}
+			else
+			{
+				clrscr();
+				printf("Invalid Input!");
+				postsortScreen();
+			}
+            
 }
