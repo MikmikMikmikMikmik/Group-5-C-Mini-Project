@@ -1031,7 +1031,6 @@ int updateProcess(int ID){
 
 void deleteItem() //DELETE ITEM MENU
 {
-	clrscr();
     int valid = 0;
     int deleteSuccess = 0;
     int i = 0;
@@ -1152,6 +1151,7 @@ void deleteItem() //DELETE ITEM MENU
 
 void deleteChoice() //DELETE CHOICE MENU
 {
+	clrscr();
     char choice[20];
     while(strcmp (choice, "D") != 0 || strcmp (choice, "S")  != 0 || strcmp (choice, "M") != 0 ||
     strcmp (choice, "d") != 0 || strcmp (choice, "s")  != 0 || strcmp (choice, "M") != 0){
