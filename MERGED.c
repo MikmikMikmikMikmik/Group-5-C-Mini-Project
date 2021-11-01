@@ -1588,9 +1588,9 @@ void idsortdescend()
             float priceTmp;
             
             
-            for(int x=0;x<sizeof(buff);x++)
+            for(int x=0;x<i;x++)
             {
-                    for(int y=x+1;y<sizeof(buff);y++)
+                    for(int y=x+1;y<i;y++)
                         {
                             
                             if(products[y].productID > products[x].productID && products[x].productID != 0)
@@ -1622,7 +1622,7 @@ void idsortdescend()
             
             
             
-            for(int x=0;x<sizeof(buff);x++)
+            for(int x=0;x<i;x++)
             {
                 printf("\n \"%d\"   %s   \"%d\"   %s   \"%.2f\"",products[x].productID,products[x].productDescription,
                 products[x].quantity,products[x].expiration,products[x].price);
