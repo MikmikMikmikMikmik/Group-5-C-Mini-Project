@@ -285,7 +285,7 @@ int addProduct()
 	    scanf(" %s", &checkPrice);
         for(int i=0; i < strlen(checkPrice); i++)
         {
-            if(isalpha(checkPrice[i]) || atoi(checkPrice) <= 0)//CHECKING IF MAY LETRA SA PRICE AND CHECK IF LESS THAN ZERO
+            if(isalpha(checkPrice[i]) || atof(checkPrice) <= 0)//CHECKING IF MAY LETRA SA PRICE AND CHECK IF LESS THAN ZERO
             {
                  passPrice = 0;
             }
@@ -298,13 +298,13 @@ int addProduct()
     }
 
 	product.price = atof(checkPrice);
+	printf("\nJUDE!%.2f", product.price);
 	// Saving data in file
 	if(product.expdate.year == 0) //NO EXPIRATION
     {
 	printf("\nAdd This Product?");
 	printf("\n\"%d\",\"%s\",\"%d\",\"-\",\"%.2f\"\n", product.id,
-			product.description, product.quantity, 
-            product.expdate.day, product.price);
+			product.description, product.quantity,  product.price);
 	printf("\n[Y][N]:   ");
 	scanf(" %s", &again);
     if (strcmp (again, "N") == 0 || strcmp (again, "n") == 0)
@@ -331,8 +331,7 @@ int addProduct()
     if(product.expdate.year == 0) //NO EXPIRATION
     {
 	fprintf(fp,"\"%d\",\"%s\",\"%d\",\"-\",\"%.2f\"\n", product.id,
-			product.description, product.quantity, 
-            product.expdate.day, product.price);
+			product.description, product.quantity, product.price);
 			//checkingDate(product.expdate.day,product.expdate.month,product.expdate.year);
     }
     else
