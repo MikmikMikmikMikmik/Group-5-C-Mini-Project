@@ -109,12 +109,14 @@ void mainMenu(){
 	    		break;}
 	    	case 'X':
 			case 'x':{
-				printf("GOOD BYE :D");
+				printf("Program Terminated Successfully");
                 exit;
 				sysInit = 1;
 	    		break;}
 	    	default:{
-				
+				printf("\nError! Invalid Input\n");
+				system("pause");
+				mainMenu();
 				sysInit = 1;
 	    		break;
 			}
