@@ -78,13 +78,42 @@ int main()
 
 
 void mainMenu(){
+	clrscr();
     int sysInit = 0;
-    char userCommand;
+    char userCommand[50];
 	printf("MAIN MENU\n[A] Add Inventory Item\n[B] Update Inventory Item\n[C] View Inventory Item\n[D] Delete Inventory Item\n[X] Exit Program\n\n");
 	printf("\nPlease input Choice: ");
-    scanf(" %c", &userCommand);
+    scanf(" %s", &userCommand);
 	    
-	    switch(userCommand){
+
+		if (strcmp (userCommand, "A") == 0 ||strcmp (userCommand, "a") == 0)
+		{
+			addProduct();
+		}
+		if (strcmp (userCommand, "B") == 0 ||strcmp (userCommand, "b") == 0)
+		{
+			updateInventoryMenu();
+		}
+		if (strcmp (userCommand, "C") == 0 ||strcmp (userCommand, "c") == 0)
+		{
+			viewMenu();
+		}
+		if (strcmp (userCommand, "D") == 0 ||strcmp (userCommand, "d") == 0)
+		{
+			deleteMenu();
+		}
+		if (strcmp (userCommand, "X") == 0 ||strcmp (userCommand, "x") == 0)
+		{
+			printf("Program Terminated Successfully");
+                exit;
+		}
+		else
+		{
+			printf("\nError! Invalid Input\n");
+				system("pause");
+				mainMenu();
+		}
+	    /*switch(userCommand){
 	    	case 'A':
 			case 'a':{
 				addProduct();
@@ -109,16 +138,18 @@ void mainMenu(){
 	    		break;}
 	    	case 'X':
 			case 'x':{
-				printf("GOOD BYE :D");
+				printf("Program Terminated Successfully");
                 exit;
 				sysInit = 1;
 	    		break;}
 	    	default:{
-				
+				printf("\nError! Invalid Input\n");
+				system("pause");
+				mainMenu();
 				sysInit = 1;
 	    		break;
 			}
-		}
+		}*/
 }
 
 
@@ -126,8 +157,10 @@ void mainMenu(){
 
 int addProduct()
 {
+	clrscr();
     printf("\nADD ITEM MENU\n");
     char again[50];
+	char confirm[50];
 	item product;
     int valid = 1;
     char theString[100];
@@ -173,7 +206,7 @@ int addProduct()
 	    scanf(" %s", &checkQuant);
         for(int i=0; i < strlen(checkQuant); i++)
         {
-            if(isalpha(checkQuant[i]))//CHECKING IF MAY LETRA SA Quantity
+            if(isalpha(checkQuant[i]) || atoi(checkQuant) <=0)//CHECKING IF MAY LETRA SA Quantity and less than zero
             {
                  passQuant = 0;
             }
@@ -190,7 +223,7 @@ int addProduct()
     while (passExp != 1)
     {
         product.expdate.year = 0;
-        printf("\nProduct Exp Date (YEAR-MONTH-DAY):	  ");
+        printf("\nProduct Exp Date (YYYY-MM-DD):	  ");
 	    scanf(" %d-%d-%d",&product.expdate.year, &product.expdate.month, &product.expdate.day);
         //printf("\n%d\n%d\n%d",product.expdate.day, product.expdate.month, product.expdate.year);
         passExp = 1;
@@ -252,7 +285,7 @@ int addProduct()
 	    scanf(" %s", &checkPrice);
         for(int i=0; i < strlen(checkPrice); i++)
         {
-            if(isalpha(checkPrice[i]))//CHECKING IF MAY LETRA SA PRICE
+            if(isalpha(checkPrice[i]) || atof(checkPrice) <= 0)//CHECKING IF MAY LETRA SA PRICE AND CHECK IF LESS THAN ZERO
             {
                  passPrice = 0;
             }
@@ -265,12 +298,40 @@ int addProduct()
     }
 
 	product.price = atof(checkPrice);
+	printf("\nJUDE!%.2f", product.price);
 	// Saving data in file
+	if(product.expdate.year == 0) //NO EXPIRATION
+    {
+	printf("\nAdd This Product?");
+	printf("\n\"%d\",\"%s\",\"%d\",\"-\",\"%.2f\"\n", product.id,
+			product.description, product.quantity,  product.price);
+	printf("\n[Y][N]:   ");
+	scanf(" %s", &again);
+    if (strcmp (again, "N") == 0 || strcmp (again, "n") == 0)
+        {
+            addProduct();
+        }
+    }
+    else
+    {
+        printf("\nAdd This Product?");
+	printf("\n\"%d\",\"%s\",\"%d\",\"%d-%d-%d\",\"%.2f\"\n",product.id,
+			product.description, product.quantity, 
+            product.expdate.year, product.expdate.month,product.expdate.day, product.price);
+	printf("\n[Y][N]:   ");
+	scanf(" %s", &again);
+    if (strcmp (again, "N") == 0 || strcmp (again, "n") == 0)
+        {
+            addProduct();
+        }
+    }
+
+
+
     if(product.expdate.year == 0) //NO EXPIRATION
     {
 	fprintf(fp,"\"%d\",\"%s\",\"%d\",\"-\",\"%.2f\"\n", product.id,
-			product.description, product.quantity, 
-            product.expdate.day, product.price);
+			product.description, product.quantity, product.price);
 			//checkingDate(product.expdate.day,product.expdate.month,product.expdate.year);
     }
     else
@@ -1089,6 +1150,7 @@ void deleteItem() //DELETE ITEM MENU
 
 void deleteChoice() //DELETE CHOICE MENU
 {
+	clrscr();
     char choice[20];
     while(strcmp (choice, "D") != 0 || strcmp (choice, "S")  != 0 || strcmp (choice, "M") != 0 ||
     strcmp (choice, "d") != 0 || strcmp (choice, "s")  != 0 || strcmp (choice, "M") != 0){
@@ -1328,7 +1390,7 @@ void idsortascend()
 }item;
  			FILE *fp;
             
-            fp = fopen("Inventory.csv","r");
+            fp = fopen("inventory.csv","r");
             char buff[500];
             int row_count = 0;
             int field_count = 0;
@@ -1454,7 +1516,7 @@ void idsortdescend()
 	float price;
 }item;
  			FILE *fp;
-            fp = fopen("Inventory.csv","r");
+            fp = fopen("inventory.csv","r");
             char buff[500];
             int row_count = 0;
             int field_count = 0;
@@ -1526,9 +1588,9 @@ void idsortdescend()
             float priceTmp;
             
             
-            for(int x=0;x<i;x++)
+            for(int x=0;x<sizeof(buff);x++)
             {
-                    for(int y=x+1;y<i;y++)
+                    for(int y=x+1;y<sizeof(buff);y++)
                         {
                             
                             if(products[y].productID > products[x].productID && products[x].productID != 0)
@@ -1560,7 +1622,7 @@ void idsortdescend()
             
             
             
-            for(int x=0;x<i;x++)
+            for(int x=0;x<sizeof(buff);x++)
             {
                 printf("\n \"%d\"   %s   \"%d\"   %s   \"%.2f\"",products[x].productID,products[x].productDescription,
                 products[x].quantity,products[x].expiration,products[x].price);
