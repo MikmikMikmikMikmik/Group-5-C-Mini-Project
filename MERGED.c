@@ -695,7 +695,7 @@ void idsortascend()
 }item;
  			FILE *fp;
             
-            fp = fopen("inventory.csv","r");
+            fp = fopen("Inventory.csv","r");
             char buff[500];
             int row_count = 0;
             int field_count = 0;
@@ -767,9 +767,9 @@ void idsortascend()
             float priceTmp;
             
             
-            for(int x=0;x<sizeof(buff);x++)
+            for(int x=0;x<i;x++)
             {
-                    for(int y=x+1;y<sizeof(buff);y++)
+                    for(int y=x+1;y<i;y++)
                         {
                             
                             if(products[y].productID < products[x].productID && products[x].productID != 0)
@@ -801,7 +801,7 @@ void idsortascend()
             
             
             
-            for(int x=0;x<sizeof(buff);x++)
+            for(int x=0;x<i;x++)
             {
                 printf("\n \"%d\"   %s   \"%d\"   %s   \"%.2f\"",products[x].productID,products[x].productDescription,
                 products[x].quantity,products[x].expiration,products[x].price);
@@ -821,7 +821,7 @@ void idsortdescend()
 	float price;
 }item;
  			FILE *fp;
-            fp = fopen("inventory.csv","r");
+            fp = fopen("Inventory.csv","r");
             char buff[500];
             int row_count = 0;
             int field_count = 0;
@@ -893,9 +893,9 @@ void idsortdescend()
             float priceTmp;
             
             
-            for(int x=0;x<sizeof(buff);x++)
+            for(int x=0;x<i;x++)
             {
-                    for(int y=x+1;y<sizeof(buff);y++)
+                    for(int y=x+1;y<i;y++)
                         {
                             
                             if(products[y].productID > products[x].productID && products[x].productID != 0)
@@ -927,7 +927,7 @@ void idsortdescend()
             
             
             
-            for(int x=0;x<sizeof(buff);x++)
+            for(int x=0;x<i;x++)
             {
                 printf("\n \"%d\"   %s   \"%d\"   %s   \"%.2f\"",products[x].productID,products[x].productDescription,
                 products[x].quantity,products[x].expiration,products[x].price);
