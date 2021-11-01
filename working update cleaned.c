@@ -9,15 +9,6 @@ void clrscr()
     system("@cls||clear");
 }
 
-int sysInit = 0;
-
-typedef struct date
-{
-	int year;
-	int month;
-	int day;
-}date;
-
 typedef struct item1{
 	unsigned int itemID;
 	char itemDesc;
@@ -25,18 +16,6 @@ typedef struct item1{
 	char expiDate;
 	float price;
 }item1;
-
-typedef struct item2{
-	unsigned int itemID;
-	char itemDesc[10];
-	unsigned short quantity;
-	struct expiDate{
-		unsigned char year;
-		unsigned char month;
-		unsigned char day;
-	}expiDate[3];
-	float price;
-}item2;
 
 typedef struct item
 {
@@ -51,7 +30,7 @@ void mainMenu();
 void updateByDesc();
 void updateAgain();
 void updateInvalidInput(int invType);
-void addAllFromBackUp();
+//void addAllFromBackUp();
 void updateInventory();
 
 char* updateCheckingDate(int day,int month,int year);
@@ -81,7 +60,6 @@ void updateInventoryMenu(){
 			break;
 		}
 	}
-	//abort();
 
 }
 
@@ -95,7 +73,6 @@ void updateAgain(){
 	}
 	else{
 		mainMenu();
-		//abort();    
 	}
 }
 
@@ -135,7 +112,6 @@ void updateInvalidInput(int invType){
 			break;
 		}
 	}
-		
 	return;
 }
 
@@ -143,15 +119,16 @@ void updateSuccessful(){
 	clrscr();
 	printf("MAIN MENU > UPDATE INVENTORY ITEM\n\nUpdate Successful!\n\n");
 	updateAgain();
-	//abort();
 }
 
+/* 
+//This command is for Testing
 void addAllFromBackUp(){
 	
 	item *addTheBackUp;
 	
 	FILE *fpointer = fopen("Inventory.csv", "w+");
-	FILE *fpointer2 = fopen("Database\\Inventory_ST_NoBOM.csv", "r");
+	FILE *fpointer2 = fopen("\\Inventory_ST_NoBOM.csv", "r");
 	if(!(fpointer2 || fpointer)) {
 		printf("\nInventory file does not exist!");
 	}
@@ -198,7 +175,7 @@ void addAllFromBackUp(){
 	
 	}
 }
-
+*/
 
 char* updateCheckingDate(int day,int month,int year)
 {
@@ -232,7 +209,8 @@ char* updateCheckingDate(int day,int month,int year)
 	return otherString;
 }
 
-
+/*
+//This command is for Testing
 void displayAllItems(){
 	int totalInventory;
 	item1 item;
@@ -256,26 +234,8 @@ void displayAllItems(){
     system("pause");
     clrscr();
     mainMenu();
-	//abort();
 }
-
-int indexOfSubString(char str[], char s[]){
-	int i,j,k,l;
-	l = strlen(s);
-	for (i=0; str[i+l-1]; i++){
-		k = i;
-		for (i=0; str[i+l-1]; i++){
-			if (str[k] != s[j]){
-				break;
-				k++;
-			}
-			if(j==l)
-			return 1;
-		}
-		return -1;
-	}
-
-}
+*/
 
 void updateSelectedID(int ID){
 	
@@ -355,19 +315,6 @@ int updateSearchDesc() {
 	}
 }
 
-
-FILE *updateStringSearch;
-int updateCh;
-void getTheChar(){
-	updateCh = fgetc(updateStringSearch);
-	
-	if (feof(updateStringSearch)){
-		printf("NO MATCH FOUND");
-		
-	}
-}
-
-
 int updateSearch(int searchChoice){
 	
 	int sChoice = searchChoice;
@@ -411,89 +358,7 @@ int updateSearch(int searchChoice){
 					fclose(fp);
 					updateSelectedID(ID);
 				}
-				
 			}
-			
-			/*int totalInventory;
-			item1 item;
-			int count;
-			FILE *fp = fopen("Inventory.csv","r");
-			
-			printf("\n\nPlease Enter Item Desc:\t\t");
-			scanf(" %[^\n]%*c", itemDesc);
-			
-			
-			//Problem here ========================================== Search Description
-			
-			//non-case sensitive search
-			char *searchforString = &itemDesc;
-			
-			getTheChar();
-			
-			while(!feof(fp))
-			{
-				for(int i =0; searchforString[i] = != '\0'; i++){
-					
-				}
-				
-			}
-			fclose(fp);
-			
-			
-			system("pause");
-			clrscr();
-			
-			int index;
-			const char s1[5] = ",\"";
-		    char line[225];
-			printf("MAIN MENU > UPDATE INVENTORY ITEM\n\tProduct ID\tDescription\t\tQuantity\tExp Date\tPrice\n");
-			
-			char *previousToken;
-			
-			while(fgets(line,sizeof(line),fp)){
-				char *token;
-				count++;
-				token = strtok(line, s1);
-				previousToken = token;
-				while (token!=NULL){
-					index = indexOfSubString(token, itemDesc);
-					if (index == -1){
-						printf("\t%s", previousToken);
-						printf("\t%s", token);
-						printf("\t%s", token);
-						printf("\t%s", token);
-						printf("\t%s", token);
-						printf("\t%s", token);
-						token = strtok(NULL, s1);
-					}else{	
-						previousToken = token;
-						token = strtok(NULL, s1);
-					}
-				}
-			totalInventory = count;
-		    fclose(fp);
-			}
-			
-			
-			
-			/*
-			int found;
-			
-		    while(fread(&item,sizeof(item),1,fp))
-	    	{
-	        	if(strcmp(item.itemDesc, itemDesc) == 0 ){
-	            	found = 1;
-		            printf("\n%d\t%-20s\t%d\t%s\t%.2f", item.itemID, item.itemDesc , item.quantity , item.expiDate , item.price);
-	    	    }
-	    	}
-	    	if(!found) {
-	        	printf("\n\nItem Name does not exist!\n\n");
-	        	system("pause");
-	        	updateAgain();
-	    	}
-	    	
-			*/
-	    	
 		}
 	}while(sChoice!=0);
 }
@@ -666,10 +531,19 @@ int updateProcess(int ID){
 	printf("\nEnter New Expiration Date: (yyyy-mm-dd)\t\t");
 	int year, month, day;
 	scanf("%d-%d-%d",&year, &month, &day); 
-	if (!((isdigit(year)) ||( isdigit(month)) || (isdigit(day)))) {
-		updateInvalidInput(9);
+	/*
+	if ((isdigit(year))) {
+		if ((isdigit(month))) {
+			if ((isdigit(day))){ 
+				sprintf(newExpiDate, '-');
+			}
+		}
+	}else{
+	*/
+	if((isdigit(year)) || (isdigit(month)) || (isdigit(day))){
+		sprintf(newExpiDate, "NULL");
 	}
-	else{
+	else{			
 		sprintf(newExpiDate, "%d-%d-%d", year, month, day);
 	}
 					
@@ -738,9 +612,11 @@ int updateProcess(int ID){
 	fclose(fp1);
 	fclose(fp2);
 	
-	if (strcmp(newExpiDate, "-") == 0){
+	if (strcmp(newExpiDate, "NULL") == 0){
+		printf("\n\nNew Expiration date is : %s", newExpiDate);
 		printf("\n\nUpdated Product Details:\nProduct ID\tDescription\t\tQuantity\tExp Date\tPrice\n%-10d\t%-10s\t%-10d\t-\t%-10.2f\n", newItemID, newItemDesc, newQuantity, newPrice);
 	}else{
+		printf("\n\nNew Expiration date is : %s", newExpiDate);
 		printf("\n\nUpdated Product Details:\nProduct ID\tDescription\t\tQuantity\tExp Date\tPrice\n%-10d\t%-10s\t%-10d\t%-10s\t%-10.2f\n", newItemID, newItemDesc, newQuantity, newExpiDate, newPrice);
 	}
 	printf("\nProceed with update?\n[Y] Yes\n[N] No\n\nPlease input choice: ");
@@ -823,7 +699,6 @@ int updateProcess(int ID){
 		z = atoi(token);
 		while (token != NULL){
 			//printf("\nI\'ve entered another loop");
-			printf(token);
 			if(tokenCount != 0){
 				if (token == '-'){
 					fprintf(fp2,"\"%s\"", token);
@@ -859,7 +734,8 @@ int updateProcess(int ID){
 
 }
 
-
+/*
+//This is for Testing
 void updateTesting(){
 	int ch = 999999;
 	char choice;
@@ -884,6 +760,7 @@ void updateTesting(){
 	}
 	while (choice==999999);
 }
+*/
 
 void mainMenu(){
 	int ch = 999999;
@@ -918,7 +795,6 @@ void mainMenu(){
 }
 
 int main(){
-    int sysInit = 0;
 	FILE *fpointer = fopen("Inventory.csv", "r");
 	if(!fpointer){
 		printf("\nInventory file does not exist!");
