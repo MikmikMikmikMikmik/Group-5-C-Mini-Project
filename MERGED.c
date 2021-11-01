@@ -1286,7 +1286,7 @@ void searchMenu() {
     char choice[2];
     printf("Search for an Inventory Item\n");
     printf("[A] Search by Product ID\n");
-    printf("[B] Search by Product Descrption\n");
+    printf("[B] Search by Product Description\n");
     printf("[C] Back to View Inventory Menu\n");
     printf("\nPlease input choice: ");
     fflush(stdin);
