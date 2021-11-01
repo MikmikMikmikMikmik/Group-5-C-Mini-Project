@@ -79,12 +79,40 @@ int main()
 
 void mainMenu(){
     int sysInit = 0;
-    char userCommand;
+    char userCommand[50];
 	printf("MAIN MENU\n[A] Add Inventory Item\n[B] Update Inventory Item\n[C] View Inventory Item\n[D] Delete Inventory Item\n[X] Exit Program\n\n");
 	printf("\nPlease input Choice: ");
-    scanf(" %c", &userCommand);
+    scanf(" %s", &userCommand);
 	    
-	    switch(userCommand){
+
+		if (strcmp (userCommand, "A") == 0 ||strcmp (userCommand, "a") == 0)
+		{
+			addProduct();
+		}
+		if (strcmp (userCommand, "B") == 0 ||strcmp (userCommand, "b") == 0)
+		{
+			updateInventoryMenu();
+		}
+		if (strcmp (userCommand, "C") == 0 ||strcmp (userCommand, "c") == 0)
+		{
+			viewMenu();
+		}
+		if (strcmp (userCommand, "D") == 0 ||strcmp (userCommand, "d") == 0)
+		{
+			deleteMenu();
+		}
+		if (strcmp (userCommand, "X") == 0 ||strcmp (userCommand, "x") == 0)
+		{
+			printf("Program Terminated Successfully");
+                exit;
+		}
+		else
+		{
+			printf("\nError! Invalid Input\n");
+				system("pause");
+				mainMenu();
+		}
+	    /*switch(userCommand){
 	    	case 'A':
 			case 'a':{
 				addProduct();
@@ -120,7 +148,7 @@ void mainMenu(){
 				sysInit = 1;
 	    		break;
 			}
-		}
+		}*/
 }
 
 
@@ -130,6 +158,7 @@ int addProduct()
 {
     printf("\nADD ITEM MENU\n");
     char again[50];
+	char confirm[50];
 	item product;
     int valid = 1;
     char theString[100];
@@ -268,6 +297,35 @@ int addProduct()
 
 	product.price = atof(checkPrice);
 	// Saving data in file
+	if(product.expdate.year == 0) //NO EXPIRATION
+    {
+	printf("\nAdd This Product?");
+	printf("\n\"%d\",\"%s\",\"%d\",\"-\",\"%.2f\"\n", product.id,
+			product.description, product.quantity, 
+            product.expdate.day, product.price);
+	printf("\n[Y][N]:   ");
+	scanf(" %s", &again);
+    if (strcmp (again, "N") == 0 || strcmp (again, "n") == 0)
+        {
+            addProduct();
+        }
+    }
+    else
+    {
+        printf("\nAdd This Product?");
+	printf("\n\"%d\",\"%s\",\"%d\",\"%d-%d-%d\",\"%.2f\"\n",product.id,
+			product.description, product.quantity, 
+            product.expdate.year, product.expdate.month,product.expdate.day, product.price);
+	printf("\n[Y][N]:   ");
+	scanf(" %s", &again);
+    if (strcmp (again, "N") == 0 || strcmp (again, "n") == 0)
+        {
+            addProduct();
+        }
+    }
+
+
+
     if(product.expdate.year == 0) //NO EXPIRATION
     {
 	fprintf(fp,"\"%d\",\"%s\",\"%d\",\"-\",\"%.2f\"\n", product.id,
