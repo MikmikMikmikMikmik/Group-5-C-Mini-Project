@@ -435,16 +435,50 @@ int updateCheckItemID(int ID, int newID){
 	char existingID_itemDesc[30];
 	char existingID_expiDate[11];
 	
-	int z, counter;
+	int z;
+	int counter = 0;
 	int tokenCount = 0;
 	const char s1[5] = "\",\"";
-    char line[225];
+	char line[225];
+	
+	FILE *fp = fopen("Database\\Inventory.csv", "r");
+	
+	if(fp == NULL){
+	printf("MAIN MENU > UPDATE INVENTORY ITEM\n The File is empty\n");
+	updateAgain();
+    }
+    
+    fclose(fp);
+    
+	//
+	
+	fp = fopen("Database\\Inventory.csv", "r");
+	
+	char temp[512];
+	int find_result;
+	int line_num;
+	
+	while(fgets(temp, 512, fp) != NULL) {
+		if((strstr(temp, tempID)) == NULL) {
+			printf("\nThere is no ID found for %d\n", tempID);
+		}
+	}
+	
+    fclose(fp);
+	
+	
+	fp = fopen("Database\\Inventory.csv", "r");
+	
 	while(fgets(line,sizeof(line),fp1)){
 		while (tempID != z) {
-			counter++;
+			
 			char *token;
 			token = strtok(line, s1);
 			z = atoi(token);
+			if ((counter == 0 ) && (token == NULL)){
+				updateInvalidInput(9);
+			}
+			counter++;
 			if ((newitemID != tempID) && (newitemID == z)){
 				clrscr();
 				printf("MAIN MENU > UPDATE INVENTORY ITEM\nThis Item ID is already taken by:\nProduct ID\tDescription\t\tQuantity\tExp Date\tPrice\n");
@@ -489,7 +523,7 @@ int updateCheckItemID(int ID, int newID){
 				fclose(fp1);
 				return 2;
 				break;
-			}
+			}    
 			else{
 				fclose(fp1);
 				return 1;
@@ -584,7 +618,7 @@ int updateProcess(int ID){
 	int year, month, day;
 	scanf("%d-%d-%d",&year, &month, &day); 
 	if (year == '-') {
-		strcpy(expiration, "-");
+		strcpy(expiration, '-');
 	}
 	
 					
@@ -654,13 +688,16 @@ int updateProcess(int ID){
 	fclose(fp1);
 	fclose(fp2);
 	
-	printf("\n\nUpdated Product Details:\nProduct ID\tDescription\t\tQuantity\tExp Date\tPrice\n%-10d\t%-10s\t%-10d\t%-10s\t%-10.2f\n", newItemID, newItemDesc, newQuantity, expiration, newPrice);
-	
+	if (expiration != NULL){
+		printf("\n\nUpdated Product Details:\nProduct ID\tDescription\t\tQuantity\tExp Date\tPrice\n%-10d\t%-10s\t%-10d\t%-10s\t%-10.2f\n", newItemID, newItemDesc, newQuantity, expiration, newPrice);
+	}else{
+		printf("\n\nUpdated Product Details:\nProduct ID\tDescription\t\tQuantity\tExp Date\tPrice\n%-10d\t%-10s\t%-10d\t-\t%-10.2f\n", newItemID, newItemDesc, newQuantity, newPrice);
+	}
 	printf("\nProceed with update?\n[Y] Yes\n[N] No\n\nPlease input choice: ");
 	char ch;
 	ch = getchar();
 	scanf("%c", &ch);
-	printf("I\'m right below the ch variable");
+	//printf("I\'m right below the ch variable");
 	if(!(ch=='y'|| ch=='Y')){
 		updateInvalidInput(3);
 		//abort();
@@ -690,8 +727,14 @@ int updateProcess(int ID){
 					//printf("\nI\'m in a for loop");
 					token = strtok(NULL, s1);
 				}
-				fprintf(fp2, "\"%d\",\"%s\",\"%d\",\"%s\",\"%.2f\"\n", newItemID, &newItemDesc, newQuantity, &expiration, newPrice);
-				//printf("\nI\'m printing the new data: \n\"%d\",\"%s\",\"%d\",\"%s\",\"%.2f\"\n", newItemID, newItemDesc, newQuantity, expiration, newPrice);
+				if (expiration != NULL){
+					fprintf(fp2, "\"%d\",\"%s\",\"%d\",\"%s\",\"%.2f\"\n", newItemID, &newItemDesc, newQuantity, &expiration, newPrice);
+					//printf("\nI\'m printing the new data: \n\"%d\",\"%s\",\"%d\",\"%s\",\"%.2f\"\n", newItemID, newItemDesc, newQuantity, expiration, newPrice);
+				}else 
+				if (expiration == NULL){              
+					fprintf(fp2, "\"%d\",\"%s\",\"%d\",\"-\",\"%.2f\"\n", newItemID, &newItemDesc, newQuantity, newPrice);
+					//printf("\nI\'m printing the new data: \n\"%d\",\"%s\",\"%d\",\"%s\",\"%.2f\"\n", newItemID, newItemDesc, newQuantity, expiration, newPrice);
+				}
 			}
 			else{
 				if(tokenCount != 0){
@@ -720,6 +763,9 @@ int updateProcess(int ID){
 	
 	
 	fp1 = fopen("Database\\copyInventory.csv", "r");
+		
+	//remove("Database\\Inventory.csv"); printf("Old Database Deleted\n");
+	
 	fp2 = fopen("Database\\Inventory.csv","w");
 	
 	tokenCount = 5;
@@ -731,8 +777,9 @@ int updateProcess(int ID){
 		z = atoi(token);
 		while (token != NULL){
 			//printf("\nI\'ve entered another loop");
+			printf(token);
 			if(tokenCount != 0){
-				if (token = '-'){
+				if (token == '-'){
 					fprintf(fp2,"\"%s\"", token);
 					token = strtok(NULL, s1);
 					tokenCount--;
@@ -750,7 +797,7 @@ int updateProcess(int ID){
 			}
 			else{
 				fprintf(fp2,"\n");
-				tokenCount = 6;
+				tokenCount = 5;
 				token = strtok(NULL, s1);		
 			}
 		}
