@@ -92,11 +92,12 @@ void mainMenu(){
 	    		break;}
 	    	case 'X':
 			case 'x':{
-				printf("Your input is %c", userCommand);
+				printf("GOOD BYE :D");
+                exit;
 				sysInit = 1;
 	    		break;}
 	    	default:{
-				printf("Your input is %c", userCommand);
+				
 				sysInit = 1;
 	    		break;
 			}
@@ -273,7 +274,7 @@ int addProduct()
         }
     if (strcmp (again, "N") == 0 || strcmp (again, "n") == 0)
         {
-            //MAIN MENU DITO
+            mainMenu();
         }
 	//return 0;
     }
@@ -469,6 +470,7 @@ void deleteChoice() //DELETE CHOICE MENU
         //addProduct();
         //SEARCH FUNCTION THEN RETURN TO DELETE FUNCTION
         //dummy code young add product
+        searchMenu();
     }
     else if (strcmp (choice, "M") == 0 || strcmp (choice, "m") == 0){
        // display();
