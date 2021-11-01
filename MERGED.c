@@ -190,8 +190,8 @@ int addProduct()
     while (passExp != 1)
     {
         product.expdate.year = 0;
-        printf("\nProduct Exp Date (YEAR/MONTH/DAY):	  ");
-	    scanf(" %d/%d/%d",&product.expdate.year, &product.expdate.month, &product.expdate.day);
+        printf("\nProduct Exp Date (YEAR-MONTH-DAY):	  ");
+	    scanf(" %d-%d-%d",&product.expdate.year, &product.expdate.month, &product.expdate.day);
         //printf("\n%d\n%d\n%d",product.expdate.day, product.expdate.month, product.expdate.year);
         passExp = 1;
         
@@ -275,9 +275,9 @@ int addProduct()
     }
     else
     {
-        fprintf(fp,"\"%d\",\"%s\",\"%d\",\"%d/%d/%d\",\"%.2f\"\n", product.id,
+        fprintf(fp,"\"%d\",\"%s\",\"%d\",\"%d-%d-%d\",\"%.2f\"\n", product.id,
 			product.description, product.quantity, 
-            product.expdate.day, product.expdate.month,product.expdate.year, product.price);
+            product.expdate.year, product.expdate.month,product.expdate.day, product.price);
 			//checkingDate(product.expdate.day,product.expdate.month,product.expdate.year);
     }
 	printf("\nNew Account added to record");
