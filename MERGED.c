@@ -88,6 +88,7 @@ void mainMenu(){
 
 		if (strcmp (userCommand, "A") == 0 ||strcmp (userCommand, "a") == 0)
 		{
+				clrscr();
 			addProduct();
 		}
 		if (strcmp (userCommand, "B") == 0 ||strcmp (userCommand, "b") == 0)
@@ -157,8 +158,9 @@ void mainMenu(){
 
 int addProduct()
 {
-	clrscr();
-    printf("\nADD ITEM MENU\n");
+
+    printf("ADD INVENTORY ITEM");
+    printf("\nPlease Enter New Item Details (Enter '-' if not applicable):");
     char again[50];
 	char confirm[50];
 	item product;
@@ -298,14 +300,20 @@ int addProduct()
     }
 
 	product.price = atof(checkPrice);
-	printf("\nJUDE!%.2f", product.price);
+	
 	// Saving data in file
 	if(product.expdate.year == 0) //NO EXPIRATION
     {
-	printf("\nAdd This Product?");
-	printf("\n\"%d\",\"%s\",\"%d\",\"-\",\"%.2f\"\n", product.id,
+	clrscr();
+    printf("ADD INVENTORY ITEM");
+        printf("\nYou will be adding:");
+		printf("\n\tProduct ID\t\tDescription\t\tQuantity\tExp Date\tPrice\n\n");
+	printf("\n\t\"%d\",\t\t\"%s\",\t\t\"%d\",\t\t\"-\"\,\t\t\"%.2f\"\n\n", product.id,
 			product.description, product.quantity,  product.price);
-	printf("\n[Y][N]:   ");
+			printf("\nAdd this item?");
+	printf("\n[Y] Yes  ");
+		printf("\n[N] No   ");
+	printf("\nPlease input choice:");
 	scanf(" %s", &again);
     if (strcmp (again, "N") == 0 || strcmp (again, "n") == 0)
         {
@@ -314,11 +322,17 @@ int addProduct()
     }
     else
     {
-        printf("\nAdd This Product?");
-	printf("\n\"%d\",\"%s\",\"%d\",\"%d-%d-%d\",\"%.2f\"\n",product.id,
+    clrscr();
+    printf("ADD INVENTORY ITEM");
+        printf("\nYou will be adding:");
+        	printf("\n\tProduct ID\t\tDescription\t\tQuantity\tExp Date\tPrice\n\n");
+	printf("\n\t \"%d\",\t\t\"%s\",\t\t\"%d\",\t\t\"%d-%d-%d\",\t\t\"%.2f\"\n\n",product.id,
 			product.description, product.quantity, 
             product.expdate.year, product.expdate.month,product.expdate.day, product.price);
-	printf("\n[Y][N]:   ");
+	printf("\nAdd this item?");
+	printf("\n[Y] Yes  ");
+		printf("\n[N] No   ");
+	printf("\nPlease input choice:");	
 	scanf(" %s", &again);
     if (strcmp (again, "N") == 0 || strcmp (again, "n") == 0)
         {
@@ -341,10 +355,17 @@ int addProduct()
             product.expdate.year, product.expdate.month,product.expdate.day, product.price);
 			//checkingDate(product.expdate.day,product.expdate.month,product.expdate.year);
     }
-	printf("\nNew Account added to record");
-
+    clrscr();
+    	printf("ADD INVENTORY ITEM");
+	printf("\nItem Added!");
+printf("\n");
 	fclose(fp);
-    printf("\nAdd A Product Again? [Y][N]:   ");
+	
+    printf("\nDo you want to add an item again?   ");
+    printf("\n[Y] Yes  ");
+		printf("\n[N] No   ");
+		printf("\n");
+		printf("\nPlease input choice:   ");
 	scanf(" %s", &again);
     if (strcmp (again, "Y") == 0 || strcmp (again, "y") == 0)
         {
