@@ -78,6 +78,7 @@ int main()
 
 
 void mainMenu(){
+	clrscr();
     int sysInit = 0;
     char userCommand[50];
 	printf("MAIN MENU\n[A] Add Inventory Item\n[B] Update Inventory Item\n[C] View Inventory Item\n[D] Delete Inventory Item\n[X] Exit Program\n\n");
@@ -156,6 +157,7 @@ void mainMenu(){
 
 int addProduct()
 {
+	clrscr();
     printf("\nADD ITEM MENU\n");
     char again[50];
 	char confirm[50];
@@ -1149,6 +1151,7 @@ void deleteItem() //DELETE ITEM MENU
 
 void deleteChoice() //DELETE CHOICE MENU
 {
+	clrscr();
     char choice[20];
     while(strcmp (choice, "D") != 0 || strcmp (choice, "S")  != 0 || strcmp (choice, "M") != 0 ||
     strcmp (choice, "d") != 0 || strcmp (choice, "s")  != 0 || strcmp (choice, "M") != 0){
