@@ -1538,6 +1538,7 @@ void idsortascend()
 	char expiration[30];
 	float price;
 }item;
+			clrscr();
  			FILE *fp;
             
             fp = fopen("inventory.csv","r");
@@ -1585,7 +1586,9 @@ void idsortascend()
                     }
                     if (field_count == 3)
                     {
-                        strcpy(products[i].expiration, field);
+                    	char *result = field+1;
+                        result[strlen(result)-1] = '\0';
+                        strcpy(products[i].expiration, result);
                     }
                     if (field_count == 4) 
                     {
@@ -1611,7 +1614,7 @@ void idsortascend()
             char expTmp[50];
             float priceTmp;
             
-            
+            printf("Product ID\tDescription\t\t\t\tQuantity\t\tExp Date\t\tPrice\n");
             for(int x=0;x<i;x++)
             {
                     for(int y=x+1;y<i;y++)
@@ -1648,8 +1651,14 @@ void idsortascend()
             
             for(int x=0;x<i;x++)
             {
-                printf("\n \"%d\"   %s   \"%d\"   %s   \"%.2f\"",products[x].productID,products[x].productDescription,
-                products[x].quantity,products[x].expiration,products[x].price);
+                //printf("\n        \"%d\"                 %0.10s\"%d\"            %s           \"%.2f\"",products[x].productID,products[x].productDescription,
+                //products[x].quantity,products[x].expiration,products[x].price);
+                printf("\n%*d", -5, products[x].productID);
+                printf("           %*.30s", -10, products[x].productDescription);
+                printf("          %*d", -4, products[x].quantity);
+                printf("                    %*.12s", -16, products[x].expiration);
+                printf("        %*.2f", -2, products[x].price);
+          
             }  
          		postsortScreen();
             
@@ -1665,7 +1674,9 @@ void idsortdescend()
 	char expiration[30];
 	float price;
 }item;
+			clrscr();
  			FILE *fp;
+            
             fp = fopen("inventory.csv","r");
             char buff[500];
             int row_count = 0;
@@ -1711,7 +1722,9 @@ void idsortdescend()
                     }
                     if (field_count == 3)
                     {
-                        strcpy(products[i].expiration, field);
+                    	char *result = field+1;
+                        result[strlen(result)-1] = '\0';
+                        strcpy(products[i].expiration, result);
                     }
                     if (field_count == 4) 
                     {
@@ -1737,7 +1750,7 @@ void idsortdescend()
             char expTmp[50];
             float priceTmp;
             
-            
+            printf("Product ID\tDescription\t\t\t\tQuantity\t\tExp Date\t\tPrice\n");
             for(int x=0;x<i;x++)
             {
                     for(int y=x+1;y<i;y++)
@@ -1774,10 +1787,17 @@ void idsortdescend()
             
             for(int x=0;x<i;x++)
             {
-                printf("\n \"%d\"   %s   \"%d\"   %s   \"%.2f\"",products[x].productID,products[x].productDescription,
-                products[x].quantity,products[x].expiration,products[x].price);
+                //printf("\n        \"%d\"                 %0.10s\"%d\"            %s           \"%.2f\"",products[x].productID,products[x].productDescription,
+                //products[x].quantity,products[x].expiration,products[x].price);
+                printf("\n%*d", -5, products[x].productID);
+                printf("           %*.30s", -10, products[x].productDescription);
+                printf("          %*d", -4, products[x].quantity);
+                printf("                    %*.12s", -16, products[x].expiration);
+                printf("        %*.2f", -2, products[x].price);
+          
             }  
-			postsortScreen();
+         		postsortScreen();
+            
 }
 
 void postsortScreen()
