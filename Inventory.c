@@ -760,11 +760,11 @@ int updateCheckItemID(int ID, int newID){
 	char existingID_expiDate[11];
 	
 	int z;
+	int found = 0;
 	int counter = 0;
 	int tokenCount = 0;
 	const char s1[5] = "\",\"";
 	char line[225];
-	
 	
 	FILE *fp = fopen("Inventory.csv", "r");
 	
@@ -785,10 +785,9 @@ int updateCheckItemID(int ID, int newID){
 			}
 			counter++;
 			if ((newitemID != tempID)){
-				if (newitemID != z){
 					//printf("I'm inside updateCheckItemID funtion");
-					printf("\n%d is a new Item ID\n\n", newitemID);
-				}else if (newitemID == z){
+				if (newitemID == z){
+					found = 1;
 					clrscr();
 					//printf("I'm inside updateCheckItemID funtion");
 					printf("MAIN MENU > UPDATE INVENTORY ITEM\nThis Item ID is already taken by:\nProduct ID\tDescription\t\tQuantity\tExp Date\tPrice\n");
@@ -830,10 +829,14 @@ int updateCheckItemID(int ID, int newID){
 						tokenCount++;
 						token = strtok(NULL, s1);
 					}
-				}
 					fclose(fp);
 					return 2;
 					break;
+				}
+				if(found == 0){
+					printf("\nThis is a new item ID: %d\n", newitemID);
+					return 1;
+				}
 			}    
 			else{
 				fclose(fp);
@@ -841,6 +844,7 @@ int updateCheckItemID(int ID, int newID){
 			}
 		}
 	}
+	
 }
 
 int updateProcess(int ID){
@@ -970,7 +974,7 @@ int updateProcess(int ID){
 		}
 	}
 	if(valid == 1){
-		newPrice = atoi(stringPrice);
+		newPrice = atof(stringPrice);
 		if (isdigit(&newPrice)){
 			updateInvalidInput(0);
 		}
@@ -1039,6 +1043,7 @@ int updateProcess(int ID){
 	if (strcmp(newExpiDate, "NULL") == 0){
 		printf("\n\nUpdated Product Details:\nProduct ID\tDescription\t\tQuantity\tExp Date\tPrice\n%-10d\t%-10s\t%-10d\t-\t%-10.2f\n", newItemID, newItemDesc, newQuantity, newPrice);
 	}else{
+		printf("\n\nNew Expiration date is : %s", newExpiDate);
 		printf("\n\nUpdated Product Details:\nProduct ID\tDescription\t\tQuantity\tExp Date\tPrice\n%-10d\t%-10s\t%-10d\t%-10s\t%-10.2f\n", newItemID, newItemDesc, newQuantity, newExpiDate, newPrice);
 	}
 	printf("\nProceed with update?\n[Y] Yes\n[N] No\n\nPlease input choice: ");
@@ -1067,7 +1072,20 @@ int updateProcess(int ID){
 		z = atoi(token);
 		while (token != NULL){
 			//printf("\nI\'ve entered another loop");
-			if (z == newItemID){
+			if (z == itemID && itemID != newItemID){
+				//printf("\nI\'ve entered z!=newItem statement");
+				int j;
+				for (j = 0; j < 7; j++){
+					//printf("\nI\'m in a for loop");
+					token = strtok(NULL, s1);
+				}
+				if (newExpiDate != NULL){
+					fprintf(fp2, "\"%d\",\"%s\",\"%d\",\"%s\",\"%.2f\"\n", newItemID, &newItemDesc, newQuantity, &newExpiDate, newPrice);
+				}else 
+				if (newExpiDate == NULL){              
+					fprintf(fp2, "\"%d\",\"%s\",\"%d\",\"-\",\"%.2f\"\n", newItemID, &newItemDesc, newQuantity, newPrice);
+				}
+			}else if (z == newItemID && itemID == newItemID){
 				//printf("\nI\'ve entered z==newItem statement");
 				int j;
 				for (j = 0; j < 6; j++){
@@ -1102,6 +1120,7 @@ int updateProcess(int ID){
 			}
 		}
 	}
+	
 	
 	fclose(fp1);
 	fclose(fp2);
