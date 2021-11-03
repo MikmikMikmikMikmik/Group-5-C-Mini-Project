@@ -221,55 +221,84 @@ int addProduct()
     product.quantity = atoi(checkQuant);
 
     int passExp = 0;
-    char noExp[50];
+    char zxc[50];
     while (passExp != 1)
     {
         product.expdate.year = 0;
         printf("\nProduct Exp Date (YYYY-MM-DD):	  ");
-	    scanf(" %d-%d-%d",&product.expdate.year, &product.expdate.month, &product.expdate.day);
+	    scanf(" %s",&zxc);
+		if(strcmp(zxc,"-")==0)
+		{
+			passExp = 1;
+			
+		}
         //printf("\n%d\n%d\n%d",product.expdate.day, product.expdate.month, product.expdate.year);
-        passExp = 1;
+		if(strcmp(zxc,"-")!=0)
+		{
+			
+			char *field = strtok(zxc,"-");
+			int field_count=0;
+
+                while (field != NULL)
+                {
+                    if (field_count == 0)
+                    {
+                        product.expdate.year = atoi(field);
+                    }
+					 if (field_count == 1)
+                    {
+                        product.expdate.month = atoi(field);
+                    }
+					 if (field_count == 2)
+                    {
+                        product.expdate.day = atoi(field);
+                    }
+                    field = strtok(NULL, "-");
+                    field_count++;
+                }
+				//printf("\n%d\n%d\n%d",product.expdate.year,product.expdate.month,product.expdate.day);
+			passExp = 1;
+			if(product.expdate.day<1)
+			{
+				passExp = 0;
+			}
+			if( (product.expdate.day>30 && (product.expdate.month ==  2 || product.expdate.month == 4 
+			||product.expdate.month == 6 ||product.expdate.month == 9 ||product.expdate.month ==  11 )))
+			{
+				passExp = 0;
+			}
+
+			if( product.expdate.day>31 && (product.expdate.month ==   1 ||product.expdate.month == 2 ||
+			product.expdate.month == 3 ||product.expdate.month == 5 ||product.expdate.month == 7 ||
+			product.expdate.month ==  8 ||product.expdate.month ==  10 ||product.expdate.month ==  12 ))
+			{
+				passExp = 0;
+			}
+
+			if( (product.expdate.day>29 && product.expdate.month == 2))
+			{
+				passExp = 0;
+			}
+
+			if (product.expdate.year<0 || product.expdate.year>2500)
+			{
+				passExp = 0;
+			}
+
+			if (product.expdate.month<1 || product.expdate.month>12)
+			{
+				passExp = 0;
+			}
+			/*if(strcmp (noExp, "-") == 0)
+			{
+				passExp = 1;
+			}*/
+			/*if(product.expdate.year == 0) //NO EXPIRATION
+			{
+				passExp = 1;
+			}*/
+		}
         
-       
-        if(product.expdate.day<1)
-	    {
-            passExp = 0;
-	    }
-        if( (product.expdate.day>30 && (product.expdate.month ==  2 || product.expdate.month == 4 
-        ||product.expdate.month == 6 ||product.expdate.month == 9 ||product.expdate.month ==  11 )))
-	    {
-            passExp = 0;
-	    }
-
-	    if( product.expdate.day>31 && (product.expdate.month ==   1 ||product.expdate.month == 2 ||
-        product.expdate.month == 3 ||product.expdate.month == 5 ||product.expdate.month == 7 ||
-        product.expdate.month ==  8 ||product.expdate.month ==  10 ||product.expdate.month ==  12 ))
-	    {
-            passExp = 0;
-	    }
-
-        if( (product.expdate.day>29 && product.expdate.month == 2))
-        {
-            passExp = 0;
-        }
-
-        if (product.expdate.year<0 || product.expdate.year>2500)
-        {
-            passExp = 0;
-        }
-
-        if (product.expdate.month<1 || product.expdate.month>12)
-        {
-            passExp = 0;
-        }
-        /*if(strcmp (noExp, "-") == 0)
-        {
-            passExp = 1;
-        }*/
-        if(product.expdate.year == 0) //NO EXPIRATION
-        {
-            passExp = 1;
-        }
         if (passExp == 0)
         {
             printf("\nInvalid date, Please enter details again");
