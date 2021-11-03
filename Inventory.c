@@ -3,14 +3,14 @@
 #include<ctype.h>
 #include<string.h>
 #include<conio.h>
-
+#include <windows.h>
 typedef struct date
 {
 	int day;
 	int month;
 	int year;
 }date;
-
+void gotoxy(int column, int line);
 
 typedef struct item
 {
@@ -60,6 +60,14 @@ void searchMenu();
 void searchItemID();
 void searchItemName();
 
+
+COORD coord = { 0, 0 };
+
+void gotoxy(int x, int y) {
+    coord.X = x; coord.Y = y;
+
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
 
 
 void clrscr()
@@ -214,7 +222,7 @@ int addProduct()
 	    scanf(" %s", &checkQuant);
         for(int i=0; i < strlen(checkQuant); i++)
         {
-            if(isalpha(checkQuant[i]) || atoi(checkQuant) <=0)//CHECKING IF MAY LETRA SA Quantity and less than zero
+            if(isalpha(checkQuant[i]) || atoi(checkQuant) <=0 || atoi(checkQuant) > 9999999)//CHECKING IF MAY LETRA SA Quantity and less than zero
             {
                  passQuant = 0;
             }
@@ -357,14 +365,25 @@ int addProduct()
     }
     else
     {
-    clrscr();
+         clrscr();
     printf("ADD INVENTORY ITEM");
-        printf("\nYou will be adding:");
-        	printf("\n\tProduct ID\t\tDescription\t\tQuantity\tExp Date\tPrice\n\n");
-	printf("\n\t \"%d\",\t\t\"%s\",\t\t\"%d\",\t\t\"%d-%d-%d\",\t\t\"%.2f\"\n\n",product.id,
-			product.description, product.quantity, 
-            product.expdate.year, product.expdate.month,product.expdate.day, product.price);
-	printf("\nAdd this item?");
+        printf("\nYou will be adding:\n");
+        
+         gotoxy(0,3);
+    printf("Product ID\t Description\t\t\t Quantity\t\t Date Exp\t Price\n"); 
+       gotoxy(0,4);
+    printf("%d",product.id);
+     gotoxy(17,4);
+    printf("%.30s",product.description);
+    gotoxy(49,4);
+    printf("\%d",product.quantity);
+    gotoxy(73,4);
+    printf("%d-%d-%d",product.expdate.year, product.expdate.month,product.expdate.day);
+    gotoxy(89,4);
+    printf("%.2f",product.price);
+    
+    
+	printf("\n\nAdd this item?");
 	printf("\n[Y] Yes  ");
 		printf("\n[N] No   ");
 	printf("\nPlease input choice:");	
