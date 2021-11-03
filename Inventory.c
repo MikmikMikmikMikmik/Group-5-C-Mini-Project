@@ -69,9 +69,15 @@ void clrscr()
 
 int main()
 {
-    //int sysInit = 0;
+	FILE *fpointer = fopen("Inventory.csv", "r");
+	if(!fpointer){
+		printf("\nInventory file does not exist!");
+		return 0;
+	}
+	else{
+		fclose(fpointer);
 		mainMenu();
-	
+	}
 	return 0;    
 }
 
@@ -187,7 +193,7 @@ int addProduct()
     
 	// Substitute the file_path string
 	// with full path of CSV file
-	FILE* fp = fopen("Inventory.csv", "a");
+	FILE* fp = fopen("Inventory.csv", "a+");
     //FILE* fp2 = fopen("Inventory_ST_NoBOM.csv", "r");
 	
 	if (!fp) {
@@ -221,55 +227,84 @@ int addProduct()
     product.quantity = atoi(checkQuant);
 
     int passExp = 0;
-    char noExp[50];
+    char zxc[50];
     while (passExp != 1)
     {
         product.expdate.year = 0;
         printf("\nProduct Exp Date (YYYY-MM-DD):	  ");
-	    scanf(" %d-%d-%d",&product.expdate.year, &product.expdate.month, &product.expdate.day);
+	    scanf(" %s",&zxc);
+		if(strcmp(zxc,"-")==0)
+		{
+			passExp = 1;
+			
+		}
         //printf("\n%d\n%d\n%d",product.expdate.day, product.expdate.month, product.expdate.year);
-        passExp = 1;
+		if(strcmp(zxc,"-")!=0)
+		{
+			
+			char *field = strtok(zxc,"-");
+			int field_count=0;
+
+                while (field != NULL)
+                {
+                    if (field_count == 0)
+                    {
+                        product.expdate.year = atoi(field);
+                    }
+					 if (field_count == 1)
+                    {
+                        product.expdate.month = atoi(field);
+                    }
+					 if (field_count == 2)
+                    {
+                        product.expdate.day = atoi(field);
+                    }
+                    field = strtok(NULL, "-");
+                    field_count++;
+                }
+				//printf("\n%d\n%d\n%d",product.expdate.year,product.expdate.month,product.expdate.day);
+			passExp = 1;
+			if(product.expdate.day<1)
+			{
+				passExp = 0;
+			}
+			if( (product.expdate.day>30 && (product.expdate.month ==  2 || product.expdate.month == 4 
+			||product.expdate.month == 6 ||product.expdate.month == 9 ||product.expdate.month ==  11 )))
+			{
+				passExp = 0;
+			}
+
+			if( product.expdate.day>31 && (product.expdate.month ==   1 ||product.expdate.month == 2 ||
+			product.expdate.month == 3 ||product.expdate.month == 5 ||product.expdate.month == 7 ||
+			product.expdate.month ==  8 ||product.expdate.month ==  10 ||product.expdate.month ==  12 ))
+			{
+				passExp = 0;
+			}
+
+			if( (product.expdate.day>29 && product.expdate.month == 2))
+			{
+				passExp = 0;
+			}
+
+			if (product.expdate.year<0 || product.expdate.year>2500)
+			{
+				passExp = 0;
+			}
+
+			if (product.expdate.month<1 || product.expdate.month>12)
+			{
+				passExp = 0;
+			}
+			/*if(strcmp (noExp, "-") == 0)
+			{
+				passExp = 1;
+			}*/
+			/*if(product.expdate.year == 0) //NO EXPIRATION
+			{
+				passExp = 1;
+			}*/
+		}
         
-       
-        if(product.expdate.day<1)
-	    {
-            passExp = 0;
-	    }
-        if( (product.expdate.day>30 && (product.expdate.month ==  2 || product.expdate.month == 4 
-        ||product.expdate.month == 6 ||product.expdate.month == 9 ||product.expdate.month ==  11 )))
-	    {
-            passExp = 0;
-	    }
-
-	    if( product.expdate.day>31 && (product.expdate.month ==   1 ||product.expdate.month == 2 ||
-        product.expdate.month == 3 ||product.expdate.month == 5 ||product.expdate.month == 7 ||
-        product.expdate.month ==  8 ||product.expdate.month ==  10 ||product.expdate.month ==  12 ))
-	    {
-            passExp = 0;
-	    }
-
-        if( (product.expdate.day>29 && product.expdate.month == 2))
-        {
-            passExp = 0;
-        }
-
-        if (product.expdate.year<0 || product.expdate.year>2500)
-        {
-            passExp = 0;
-        }
-
-        if (product.expdate.month<1 || product.expdate.month>12)
-        {
-            passExp = 0;
-        }
-        /*if(strcmp (noExp, "-") == 0)
-        {
-            passExp = 1;
-        }*/
-        if(product.expdate.year == 0) //NO EXPIRATION
-        {
-            passExp = 1;
-        }
         if (passExp == 0)
         {
             printf("\nInvalid date, Please enter details again");
@@ -731,11 +766,11 @@ int updateCheckItemID(int ID, int newID){
 	char existingID_expiDate[11];
 	
 	int z;
+	int found = 0;
 	int counter = 0;
 	int tokenCount = 0;
 	const char s1[5] = "\",\"";
 	char line[225];
-	
 	
 	FILE *fp = fopen("Inventory.csv", "r");
 	
@@ -756,10 +791,9 @@ int updateCheckItemID(int ID, int newID){
 			}
 			counter++;
 			if ((newitemID != tempID)){
-				if (newitemID != z){
 					//printf("I'm inside updateCheckItemID funtion");
-					printf("\n%d is a new Item ID\n\n", newitemID);
-				}else if (newitemID == z){
+				if (newitemID == z){
+					found = 1;
 					clrscr();
 					//printf("I'm inside updateCheckItemID funtion");
 					printf("MAIN MENU > UPDATE INVENTORY ITEM\nThis Item ID is already taken by:\nProduct ID\tDescription\t\tQuantity\tExp Date\tPrice\n");
@@ -801,10 +835,14 @@ int updateCheckItemID(int ID, int newID){
 						tokenCount++;
 						token = strtok(NULL, s1);
 					}
-				}
 					fclose(fp);
 					return 2;
 					break;
+				}
+				if(found == 0){
+					printf("\nThis is a new item ID: %d\n", newitemID);
+					return 1;
+				}
 			}    
 			else{
 				fclose(fp);
@@ -812,6 +850,7 @@ int updateCheckItemID(int ID, int newID){
 			}
 		}
 	}
+	
 }
 
 int updateProcess(int ID){
@@ -941,7 +980,7 @@ int updateProcess(int ID){
 		}
 	}
 	if(valid == 1){
-		newPrice = atoi(stringPrice);
+		newPrice = atof(stringPrice);
 		if (isdigit(&newPrice)){
 			updateInvalidInput(0);
 		}
@@ -1010,6 +1049,7 @@ int updateProcess(int ID){
 	if (strcmp(newExpiDate, "NULL") == 0){
 		printf("\n\nUpdated Product Details:\nProduct ID\tDescription\t\tQuantity\tExp Date\tPrice\n%-10d\t%-10s\t%-10d\t-\t%-10.2f\n", newItemID, newItemDesc, newQuantity, newPrice);
 	}else{
+		printf("\n\nNew Expiration date is : %s", newExpiDate);
 		printf("\n\nUpdated Product Details:\nProduct ID\tDescription\t\tQuantity\tExp Date\tPrice\n%-10d\t%-10s\t%-10d\t%-10s\t%-10.2f\n", newItemID, newItemDesc, newQuantity, newExpiDate, newPrice);
 	}
 	printf("\nProceed with update?\n[Y] Yes\n[N] No\n\nPlease input choice: ");
@@ -1038,7 +1078,20 @@ int updateProcess(int ID){
 		z = atoi(token);
 		while (token != NULL){
 			//printf("\nI\'ve entered another loop");
-			if (z == newItemID){
+			if (z == itemID && itemID != newItemID){
+				//printf("\nI\'ve entered z!=newItem statement");
+				int j;
+				for (j = 0; j < 7; j++){
+					//printf("\nI\'m in a for loop");
+					token = strtok(NULL, s1);
+				}
+				if (newExpiDate != NULL){
+					fprintf(fp2, "\"%d\",\"%s\",\"%d\",\"%s\",\"%.2f\"\n", newItemID, &newItemDesc, newQuantity, &newExpiDate, newPrice);
+				}else 
+				if (newExpiDate == NULL){              
+					fprintf(fp2, "\"%d\",\"%s\",\"%d\",\"-\",\"%.2f\"\n", newItemID, &newItemDesc, newQuantity, newPrice);
+				}
+			}else if (z == newItemID && itemID == newItemID){
 				//printf("\nI\'ve entered z==newItem statement");
 				int j;
 				for (j = 0; j < 6; j++){
@@ -1073,6 +1126,7 @@ int updateProcess(int ID){
 			}
 		}
 	}
+	
 	
 	fclose(fp1);
 	fclose(fp2);
@@ -1531,7 +1585,9 @@ void idsortascend()
                     }
                     if (field_count == 3)
                     {
-                        strcpy(products[i].expiration, field);
+                    	char *result = field+1;
+                        result[strlen(result)-1] = '\0';
+                        strcpy(products[i].expiration, result);
                     }
                     if (field_count == 4) 
                     {
@@ -1557,7 +1613,7 @@ void idsortascend()
             char expTmp[50];
             float priceTmp;
             
-            
+            printf("\n\tProduct ID\t\tDescription\t\tQuantity\t\tExp Date\t\tPrice\n");
             for(int x=0;x<i;x++)
             {
                     for(int y=x+1;y<i;y++)
@@ -1594,8 +1650,14 @@ void idsortascend()
             
             for(int x=0;x<i;x++)
             {
-                printf("\n \"%d\"   %s   \"%d\"   %s   \"%.2f\"",products[x].productID,products[x].productDescription,
-                products[x].quantity,products[x].expiration,products[x].price);
+                //printf("\n        \"%d\"                 %0.10s\"%d\"            %s           \"%.2f\"",products[x].productID,products[x].productDescription,
+                //products[x].quantity,products[x].expiration,products[x].price);
+                printf("\n        %*d", -5, products[x].productID);
+                printf("                   %*.10s", -10, products[x].productDescription);
+                printf("              %*d", -4, products[x].quantity);
+                printf("                    %*.12s", -16, products[x].expiration);
+                printf("        %*.2f", -2, products[x].price);
+          
             }  
          		postsortScreen();
             
@@ -1612,6 +1674,7 @@ void idsortdescend()
 	float price;
 }item;
  			FILE *fp;
+            
             fp = fopen("inventory.csv","r");
             char buff[500];
             int row_count = 0;
@@ -1657,7 +1720,9 @@ void idsortdescend()
                     }
                     if (field_count == 3)
                     {
-                        strcpy(products[i].expiration, field);
+                    	char *result = field+1;
+                        result[strlen(result)-1] = '\0';
+                        strcpy(products[i].expiration, result);
                     }
                     if (field_count == 4) 
                     {
@@ -1683,7 +1748,7 @@ void idsortdescend()
             char expTmp[50];
             float priceTmp;
             
-            
+            printf("\n\tProduct ID\t\tDescription\t\tQuantity\t\tExp Date\t\tPrice\n");
             for(int x=0;x<i;x++)
             {
                     for(int y=x+1;y<i;y++)
@@ -1720,10 +1785,17 @@ void idsortdescend()
             
             for(int x=0;x<i;x++)
             {
-                printf("\n \"%d\"   %s   \"%d\"   %s   \"%.2f\"",products[x].productID,products[x].productDescription,
-                products[x].quantity,products[x].expiration,products[x].price);
+                //printf("\n        \"%d\"                 %0.10s\"%d\"            %s           \"%.2f\"",products[x].productID,products[x].productDescription,
+                //products[x].quantity,products[x].expiration,products[x].price);
+                printf("\n        %*d", -5, products[x].productID);
+                printf("                   %*.10s", -10, products[x].productDescription);
+                printf("              %*d", -4, products[x].quantity);
+                printf("                    %*.12s", -16, products[x].expiration);
+                printf("        %*.2f", -2, products[x].price);
+          
             }  
-			postsortScreen();
+         		postsortScreen();
+            
 }
 
 void postsortScreen()
