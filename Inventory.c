@@ -69,9 +69,15 @@ void clrscr()
 
 int main()
 {
-    //int sysInit = 0;
+	FILE *fpointer = fopen("Inventory.csv", "r");
+	if(!fpointer){
+		printf("\nInventory file does not exist!");
+		return 0;
+	}
+	else{
+		fclose(fpointer);
 		mainMenu();
-	
+	}
 	return 0;    
 }
 
