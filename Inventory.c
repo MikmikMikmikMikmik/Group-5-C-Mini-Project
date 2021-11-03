@@ -187,7 +187,7 @@ int addProduct()
     
 	// Substitute the file_path string
 	// with full path of CSV file
-	FILE* fp = fopen("Inventory.csv", "a");
+	FILE* fp = fopen("Inventory.csv", "a+");
     //FILE* fp2 = fopen("Inventory_ST_NoBOM.csv", "r");
 	
 	if (!fp) {
