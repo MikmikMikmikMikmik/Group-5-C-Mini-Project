@@ -398,13 +398,13 @@ int addProduct()
 
     if(product.expdate.year == 0) //NO EXPIRATION
     {
-	fprintf(fp,"\"%d\",\"%s\",\"%d\",\"-\",\"%.2f\"\n", product.id,
+	fprintf(fp,"\n\"%d\",\"%s\",\"%d\",\"-\",\"%.2f\"", product.id,
 			product.description, product.quantity, product.price);
 			//checkingDate(product.expdate.day,product.expdate.month,product.expdate.year);
     }
     else
     {
-        fprintf(fp,"\"%d\",\"%s\",\"%d\",\"%d-%d-%d\",\"%.2f\"\n", product.id,
+        fprintf(fp,"\n\"%d\",\"%s\",\"%d\",\"%d-%d-%d\",\"%.2f\"", product.id,
 			product.description, product.quantity, 
             product.expdate.year, product.expdate.month,product.expdate.day, product.price);
 			//checkingDate(product.expdate.day,product.expdate.month,product.expdate.year);
